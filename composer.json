@@ -1,0 +1,44 @@
+{
+  "description": "PHP library to make getting dates easier when working with recurring tasks.",
+  "type": "library",
+  "keywords": ["recurring", "recurrence","date", "dates", "composer", "package", "library", "tasks"],
+  "name": "wilianx7/php-recurring",
+  "homepage": "https://github.com/wilianx7/php-recurring",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Wilian Borges",
+      "email": "wilianx7@hotmail.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^7.4",
+    "nesbot/carbon": "^2.28",
+    "spatie/enum": "^2.3",
+    "tightenco/collect": "^6.9"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.0|^8.0",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "PhpRecurring\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "PhpRecurring\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "test-coverage": "phpunit --coverage-html coverage"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
