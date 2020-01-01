@@ -131,7 +131,8 @@ class GenerateDatesTest extends AbstractTestCase
             ->setFrequencyType(FrequencyTypeEnum::DAY())
             ->setFrequencyInterval(3)
             ->setFrequencyEndType(FrequencyEndTypeEnum::AFTER())
-            ->setFrequencyEndValue(4);
+            ->setFrequencyEndValue(4)
+            ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
 
         $datesCollection = $this->generateDates($config);
 
