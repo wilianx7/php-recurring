@@ -14,7 +14,7 @@ trait GenerateEndDate
     protected function generateEndDate($frequencyEndValue, FrequencyEndTypeEnum $frequencyEndType): Carbon
     {
         if (!$frequencyEndValue || $frequencyEndType->isEqual(FrequencyEndTypeEnum::NEVER())) {
-            return Carbon::now()->endOfYear();
+            return Carbon::now()->endOfYear()->setTime(23, 59, 59, 999999);
         }
 
         if ($frequencyEndType->isEqual(FrequencyEndTypeEnum::IN())) {
@@ -31,6 +31,6 @@ trait GenerateEndDate
             }
         }
 
-        return Carbon::now()->endOfYear();
+        return Carbon::now()->endOfYear()->setTime(23, 59, 59, 999999);
     }
 }
