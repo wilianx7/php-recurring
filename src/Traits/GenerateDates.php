@@ -22,6 +22,10 @@ trait GenerateDates
         $this->bindEndDate();
         $frequencyEndValue = $this->getFrequencyEndValue();
 
+        if ($this->shouldIncludeStartDate()) {
+            $this->datesCollection->push($this->recurringConfig->getStartDate()->copy());
+        }
+
         while ($this->getWhileCondition($currentDate, $frequencyEndValue)) {
             if ($recurringConfig->getExceptDates()
                 && $recurringConfig->getExceptDates()->contains(
@@ -60,6 +64,21 @@ trait GenerateDates
         }
 
         return $this->endDate;
+    }
+
+    private function shouldIncludeStartDate(): bool
+    {
+        if ($this->recurringConfig && $this->recurringConfig->getIncludeStartDate()) {
+            if (!$this->recurringConfig->getExceptDates()) {
+                return true;
+            } else if (!$this->recurringConfig->getExceptDates()->contains(
+                $this->recurringConfig->getStartDate()->copy()->setTime(0, 0, 0, 0)
+            )) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function getWhileCondition(Carbon $currentDate, $frequencyEndValue)
