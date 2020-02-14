@@ -4,6 +4,7 @@ namespace PhpRecurring\Traits;
 
 use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
+use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\RecurringConfig;
 use Tightenco\Collect\Support\Collection;
@@ -23,7 +24,17 @@ trait GenerateDates
         $frequencyEndValue = $this->getFrequencyEndValue();
 
         if ($this->shouldIncludeStartDate()) {
-            $this->datesCollection->push($this->recurringConfig->getStartDate()->copy());
+            if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::DAY())) {
+                $currentDate = $recurringConfig->getStartDate()->copy()->subDays($recurringConfig->getFrequencyInterval());
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::WEEK())) {
+                $currentDate = $recurringConfig->getStartDate()->copy()->subWeeks($recurringConfig->getFrequencyInterval());
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::MONTH())) {
+                $currentDate = $recurringConfig->getStartDate()->copy()->subMonths($recurringConfig->getFrequencyInterval());
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::YEAR())) {
+                $currentDate = $recurringConfig->getStartDate()->copy()->subYears($recurringConfig->getFrequencyInterval());
+            }
+
+            $currentDate->subDay();
         }
 
         while ($this->getWhileCondition($currentDate, $frequencyEndValue)) {
@@ -69,13 +80,7 @@ trait GenerateDates
     private function shouldIncludeStartDate(): bool
     {
         if ($this->recurringConfig && $this->recurringConfig->getIncludeStartDate()) {
-            if (!$this->recurringConfig->getExceptDates()) {
-                return true;
-            } else if (!$this->recurringConfig->getExceptDates()->contains(
-                $this->recurringConfig->getStartDate()->copy()->setTime(0, 0, 0, 0)
-            )) {
-                return true;
-            }
+            return true;
         }
 
         return false;
