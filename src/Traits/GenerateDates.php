@@ -4,6 +4,7 @@ namespace PhpRecurring\Traits;
 
 use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
+use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\RecurringConfig;
 use Tightenco\Collect\Support\Collection;
@@ -21,6 +22,20 @@ trait GenerateDates
         $currentDate = $recurringConfig->getStartDate()->copy();
         $this->bindEndDate();
         $frequencyEndValue = $this->getFrequencyEndValue();
+
+        if ($this->shouldIncludeStartDate()) {
+            if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::DAY())) {
+                $currentDate = $recurringConfig->getStartDate()->copy()->subDays($recurringConfig->getFrequencyInterval());
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::WEEK())) {
+                $currentDate = $recurringConfig->getStartDate()->copy()->subWeeks($recurringConfig->getFrequencyInterval());
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::MONTH())) {
+                $currentDate = $recurringConfig->getStartDate()->copy()->subMonths($recurringConfig->getFrequencyInterval());
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::YEAR())) {
+                $currentDate = $recurringConfig->getStartDate()->copy()->subYears($recurringConfig->getFrequencyInterval());
+            }
+
+            $currentDate->subDay();
+        }
 
         while ($this->getWhileCondition($currentDate, $frequencyEndValue)) {
             if ($recurringConfig->getExceptDates()
@@ -60,6 +75,15 @@ trait GenerateDates
         }
 
         return $this->endDate;
+    }
+
+    private function shouldIncludeStartDate(): bool
+    {
+        if ($this->recurringConfig && $this->recurringConfig->getIncludeStartDate()) {
+            return true;
+        }
+
+        return false;
     }
 
     private function getWhileCondition(Carbon $currentDate, $frequencyEndValue)

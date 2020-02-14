@@ -23,6 +23,7 @@ class RecurringConfig
     private ?Carbon $lastRepeatedDate;
     private ?int $repeatedCount;
     private ?Collection $exceptDates;
+    private ?bool $includeStartDate;
 
     /**
      * @var $repeatIn string|array|null
@@ -46,6 +47,7 @@ class RecurringConfig
         $this->exceptDates = null;
         $this->repeatIn = null;
         $this->frequencyEndValue = null;
+        $this->includeStartDate = false;
     }
 
     public function getStartDate(): Carbon
@@ -62,6 +64,24 @@ class RecurringConfig
     public function setStartDate(Carbon $startDate): RecurringConfig
     {
         $this->startDate = $startDate;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getIncludeStartDate(): ?bool
+    {
+        return $this->includeStartDate;
+    }
+
+    /**
+     * @param bool|null $includeStartDate
+     * @return RecurringConfig
+     */
+    public function setIncludeStartDate(?bool $includeStartDate): RecurringConfig
+    {
+        $this->includeStartDate = $includeStartDate;
         return $this;
     }
 
@@ -215,11 +235,11 @@ class RecurringConfig
     /**
      * Dates when recurrence should not be generated.
      *
-     * @param Collection|null $exceptDates
+     * @param array|Collection|null $exceptDates
      * @return RecurringConfig
      * @throws InvalidExceptDate
      */
-    public function setExceptDates(?Collection $exceptDates): RecurringConfig
+    public function setExceptDates($exceptDates): RecurringConfig
     {
         if ($exceptDates) {
             $this->exceptDates = new Collection();
