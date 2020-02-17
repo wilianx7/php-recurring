@@ -19,29 +19,39 @@ trait GenerateDates
     {
         $this->recurringConfig = $recurringConfig;
         $this->datesCollection = new Collection();
-        $currentDate = $recurringConfig->getStartDate()->copy();
         $this->bindEndDate();
         $frequencyEndValue = $this->getFrequencyEndValue();
 
         if ($this->shouldIncludeStartDate()) {
-            if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::DAY())) {
-                $currentDate = $recurringConfig->getStartDate()->copy()->subDays($recurringConfig->getFrequencyInterval());
-            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::WEEK())) {
-                $currentDate = $recurringConfig->getStartDate()->copy()->subWeeks($recurringConfig->getFrequencyInterval());
-            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::MONTH())) {
-                $currentDate = $recurringConfig->getStartDate()->copy()->subMonths($recurringConfig->getFrequencyInterval());
-            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::YEAR())) {
-                $currentDate = $recurringConfig->getStartDate()->copy()->subYears($recurringConfig->getFrequencyInterval());
+            if (!$recurringConfig->getExceptDates() || $recurringConfig->getExceptDates() && !($recurringConfig->getExceptDates()
+                    ->contains($recurringConfig->getStartDate()->copy()->setTime(0, 0, 0, 0))
+                )) {
+                $this->datesCollection->push($recurringConfig->getStartDate()->copy());
             }
 
-            $currentDate->subDay();
+            if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::DAY())) {
+                $recurringConfig->setStartDate($recurringConfig->getStartDate()->copy()->subDays($recurringConfig->getFrequencyInterval()));
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::WEEK())) {
+                $recurringConfig->setStartDate($recurringConfig->getStartDate()->copy()->subWeeks($recurringConfig->getFrequencyInterval()));
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::MONTH())) {
+                $recurringConfig->setStartDate($recurringConfig->getStartDate()->copy()->subMonths($recurringConfig->getFrequencyInterval()));
+            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::YEAR())) {
+                $recurringConfig->setStartDate($recurringConfig->getStartDate()->copy()->subYears($recurringConfig->getFrequencyInterval()));
+            }
         }
+
+        $currentDate = $recurringConfig->getStartDate()->copy();
 
         while ($this->getWhileCondition($currentDate, $frequencyEndValue)) {
             if ($recurringConfig->getExceptDates()
                 && $recurringConfig->getExceptDates()->contains(
                     $currentDate->copy()->setTime(0, 0, 0, 0)
                 )) {
+                continue;
+            }
+
+            if ($recurringConfig->getIncludeStartDate() && $this->datesCollection->first()
+                && $currentDate->copy()->lte($this->datesCollection->first())) {
                 continue;
             }
 
