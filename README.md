@@ -89,8 +89,11 @@ $datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring
 | `frequencyEndValue` | Determines a value according to the chosen stop criterion. Can be setted, for example, as: null (for NEVER); 3 (for AFTER); Carbon::now() (for IN). | Null |
 | `lastRepeatedDate` | Date the last recurrence was generated. It is used to avoid unnecessary date generation by calling the generation method more than once. | Null |
 | `repeatedCount` | How many recurrences have already been generated. It is used to avoid unnecessary date generation by calling the generation method more than once. | Null |
-| `exceptDates` | Dates when recurrence should not be generated even if the date conforms to the specified setting. | Null |
+| `exceptDates` | Dates when recurrence should not be generated even if the date conforms to the specified setting. Accepts native array or Laravel Collection. | Null |
+| `includeStartDate` | Defines whether the start date should be included in the return array | false |
 
+* **includeStartDate**: By default, the start date is not included in the return array, as it assumes that this date is already in use, requiring only the return of subsequent dates. 
+However, you can override this behavior by setting "includeStartDate" property as true.
 
 ## Recurring Builder
 
