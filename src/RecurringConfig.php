@@ -243,9 +243,12 @@ class RecurringConfig
     {
         if ($exceptDates) {
             $this->exceptDates = new Collection();
+
             foreach ($exceptDates as $exceptDate) {
                 if ($exceptDate instanceof Carbon) {
                     $this->exceptDates->push($exceptDate->setTime(0, 0, 0, 0));
+                } else if (Carbon::hasFormat($exceptDate, 'Y-m-d H:i:s')) {
+                    $this->exceptDates->push(Carbon::createFromFormat('Y-m-d H:i:s', $exceptDate)->setTime(0, 0, 0, 0));
                 } else {
                     throw new InvalidExceptDate();
                 }
