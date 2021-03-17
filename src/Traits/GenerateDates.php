@@ -105,11 +105,11 @@ trait GenerateDates
             return ($currentDate->lte($this->endDate));
         } else if ($this->recurringConfig->getFrequencyEndType()->isEqual(FrequencyEndTypeEnum::AFTER())) {
             if ($this->recurringConfig->getRepeatedCount()) {
-                return ($currentDate->lte($this->endDate)
-                    && ((count($this->datesCollection) + $this->recurringConfig->getRepeatedCount()) < $frequencyEndValue));
+                return (!$this->endDate || ($currentDate->lte($this->endDate)))
+                    && ((count($this->datesCollection) + $this->recurringConfig->getRepeatedCount()) < $frequencyEndValue);
             }
 
-            return ($currentDate->lte($this->endDate) && (count($this->datesCollection) < $frequencyEndValue));
+            return ((!$this->endDate || $currentDate->lte($this->endDate)) && (count($this->datesCollection) < $frequencyEndValue));
         }
 
         return false;
