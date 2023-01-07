@@ -15,8 +15,7 @@ use PhpRecurring\RecurringConfig;
 
 class RecurringConfigTest extends AbstractTestCase
 {
-    /** @test */
-    public function invalid_frequency_interval()
+    public function test_invalid_frequency_interval(): void
     {
         $recurringConfig = new RecurringConfig();
 
@@ -26,54 +25,49 @@ class RecurringConfigTest extends AbstractTestCase
         self::assertFalse($recurringConfig->isValid());
     }
 
-    /** @test */
-    public function invalid_frequency_end_value_after()
+    public function test_invalid_frequency_end_value_after(): void
     {
         $recurringConfig = new RecurringConfig();
 
-        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::AFTER());
+        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::AFTER);
 
         $this->expectException(InvalidFrequencyEndValue::class);
         self::assertFalse($recurringConfig->isValid());
     }
 
-    /** @test */
-    public function invalid_frequency_end_value_in()
+    public function test_invalid_frequency_end_value_in(): void
     {
         $recurringConfig = new RecurringConfig();
 
-        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::IN());
+        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::IN);
 
         $this->expectException(InvalidFrequencyEndValue::class);
         self::assertFalse($recurringConfig->isValid());
     }
 
-    /** @test */
-    public function invalid_frequency_end_value_not_carbon_instance()
+    public function test_invalid_frequency_end_value_not_carbon_instance(): void
     {
         $recurringConfig = new RecurringConfig();
 
-        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::IN())
+        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::IN)
             ->setFrequencyEndValue(2);
 
         $this->expectException(InvalidFrequencyEndValue::class);
         self::assertFalse($recurringConfig->isValid());
     }
 
-    /** @test */
-    public function invalid_frequency_end_value_carbon_instance()
+    public function test_invalid_frequency_end_value_carbon_instance(): void
     {
         $recurringConfig = new RecurringConfig();
 
-        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::AFTER())
+        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::AFTER)
             ->setFrequencyEndValue(Carbon::now());
 
         $this->expectException(InvalidFrequencyEndValue::class);
         self::assertFalse($recurringConfig->isValid());
     }
 
-    /** @test */
-    public function invalid_repeated_count()
+    public function test_invalid_repeated_count(): void
     {
         $recurringConfig = new RecurringConfig();
 
@@ -83,27 +77,25 @@ class RecurringConfigTest extends AbstractTestCase
         self::assertFalse($recurringConfig->isValid());
     }
 
-    /** @test */
-    public function invalid_repeat_in_year()
+    public function test_invalid_repeat_in_year(): void
     {
         $recurringConfig = new RecurringConfig();
 
-        $recurringConfig->setFrequencyType(FrequencyTypeEnum::YEAR())
+        $recurringConfig->setFrequencyType(FrequencyTypeEnum::YEAR)
             ->setRepeatIn(['day' => 2, 'test' => 4]);
 
         $this->expectException(InvalidRepeatIn::class);
         self::assertFalse($recurringConfig->isValid());
     }
 
-    /** @test */
-    public function valid_configuration()
+    public function test_valid_configuration(): void
     {
         $recurringConfig = new RecurringConfig();
 
         $recurringConfig->setStartDate(Carbon::create(2019, 1, 1, 8, 0, 0))
-            ->setFrequencyType(FrequencyTypeEnum::YEAR())
+            ->setFrequencyType(FrequencyTypeEnum::YEAR)
             ->setFrequencyInterval(3)
-            ->setFrequencyEndType(FrequencyEndTypeEnum::AFTER())
+            ->setFrequencyEndType(FrequencyEndTypeEnum::AFTER)
             ->setFrequencyEndValue(4)
             ->setRepeatIn(['day' => 31, 'month' => 2])
             ->setEndDate(Carbon::create(2031, 12, 31, 8, 0, 0));
