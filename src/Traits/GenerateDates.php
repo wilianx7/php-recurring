@@ -15,6 +15,9 @@ trait GenerateDates
     private ?Carbon $endDate;
     private Collection $datesCollection;
 
+    /**
+     * @throws InvalidFrequencyEndValue
+     */
     protected function generateDates(RecurringConfig $recurringConfig): Collection
     {
         $this->recurringConfig = $recurringConfig;
@@ -22,36 +25,25 @@ trait GenerateDates
         $this->bindEndDate();
         $frequencyEndValue = $this->getFrequencyEndValue();
 
-        if ($this->shouldIncludeStartDate()) {
-            if (!$recurringConfig->getExceptDates() || $recurringConfig->getExceptDates() && !($recurringConfig->getExceptDates()
-                    ->contains($recurringConfig->getStartDate()->copy()->setTime(0, 0, 0, 0))
-                )) {
+        if ($this->recurringConfig->getIncludeStartDate()) {
+            if (!$this->isStartDateExcepted()) {
                 $this->datesCollection->push($recurringConfig->getStartDate()->copy());
             }
 
-            if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::DAY())) {
-                $recurringConfig->setStartDate($recurringConfig->getStartDate()->copy()->subDays($recurringConfig->getFrequencyInterval()));
-            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::WEEK())) {
-                $recurringConfig->setStartDate($recurringConfig->getStartDate()->copy()->subWeeks($recurringConfig->getFrequencyInterval()));
-            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::MONTH())) {
-                $recurringConfig->setStartDate($recurringConfig->getStartDate()->copy()->subMonths($recurringConfig->getFrequencyInterval()));
-            } else if ($recurringConfig->getFrequencyType()->isEqual(FrequencyTypeEnum::YEAR())) {
-                $recurringConfig->setStartDate($recurringConfig->getStartDate()->copy()->subYears($recurringConfig->getFrequencyInterval()));
-            }
+            $this->bindStartDate();
         }
 
         $currentDate = $recurringConfig->getStartDate()->copy();
 
         while ($this->getWhileCondition($currentDate, $frequencyEndValue)) {
-            if ($recurringConfig->getExceptDates()
-                && $recurringConfig->getExceptDates()->contains(
-                    $currentDate->copy()->setTime(0, 0, 0, 0)
-                )) {
+            if ($recurringConfig->getExceptDates()?->contains($currentDate->copy()->setTime(0, 0))) {
                 continue;
             }
 
-            if ($recurringConfig->getIncludeStartDate() && $this->datesCollection->first()
-                && $currentDate->copy()->lte($this->datesCollection->first())) {
+            if (
+                $recurringConfig->getIncludeStartDate() && $this->datesCollection->isNotEmpty()
+                && $currentDate->copy()->lte($this->datesCollection->first())
+            ) {
                 continue;
             }
 
@@ -63,18 +55,42 @@ trait GenerateDates
         return $this->datesCollection;
     }
 
-    private function bindEndDate()
+    private function bindStartDate(): void
     {
-        if ($this->recurringConfig->getEndDate()) {
-            $this->endDate = $this->recurringConfig->getEndDate();
-        } else {
-            $this->endDate = $this->generateEndDate($this->recurringConfig->getFrequencyEndValue(), $this->recurringConfig->getFrequencyEndType());
-        }
+        match ($this->recurringConfig->getFrequencyType()) {
+            FrequencyTypeEnum::DAY => $this->recurringConfig->setStartDate(
+                $this->recurringConfig->getStartDate()->copy()->subDays($this->recurringConfig->getFrequencyInterval())
+            ),
+
+            FrequencyTypeEnum::WEEK => $this->recurringConfig->setStartDate(
+                $this->recurringConfig->getStartDate()->copy()->subWeeks($this->recurringConfig->getFrequencyInterval())
+            ),
+
+            FrequencyTypeEnum::MONTH => $this->recurringConfig->setStartDate(
+                $this->recurringConfig->getStartDate()->copy()->subMonths($this->recurringConfig->getFrequencyInterval())
+            ),
+
+            FrequencyTypeEnum::YEAR => $this->recurringConfig->setStartDate(
+                $this->recurringConfig->getStartDate()->copy()->subYears($this->recurringConfig->getFrequencyInterval())
+            )
+        };
     }
 
-    private function getFrequencyEndValue()
+    private function bindEndDate(): void
     {
-        if ($this->recurringConfig->getFrequencyEndType()->isEqual(FrequencyEndTypeEnum::AFTER())) {
+        $this->endDate = $this->recurringConfig->getEndDate()
+            ?? $this->generateEndDate(
+                $this->recurringConfig->getFrequencyEndValue(),
+                $this->recurringConfig->getFrequencyEndType()
+            );
+    }
+
+    /**
+     * @throws InvalidFrequencyEndValue
+     */
+    private function getFrequencyEndValue(): int|Carbon
+    {
+        if ($this->recurringConfig->getFrequencyEndType() == FrequencyEndTypeEnum::AFTER) {
             $frequencyEndValue = (int)$this->recurringConfig->getFrequencyEndValue();
 
             if ($frequencyEndValue != 0) {
@@ -87,31 +103,27 @@ trait GenerateDates
         return $this->endDate;
     }
 
-    private function shouldIncludeStartDate(): bool
-    {
-        if ($this->recurringConfig && $this->recurringConfig->getIncludeStartDate()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function getWhileCondition(Carbon $currentDate, $frequencyEndValue)
+    private function getWhileCondition(Carbon $currentDate, $frequencyEndValue): bool
     {
         $currentDate->addDay();
 
-        if ($this->recurringConfig->getFrequencyEndType()->isEqual(FrequencyEndTypeEnum::NEVER())
-            || $this->recurringConfig->getFrequencyEndType()->isEqual(FrequencyEndTypeEnum::IN())) {
-            return ($currentDate->lte($this->endDate));
-        } else if ($this->recurringConfig->getFrequencyEndType()->isEqual(FrequencyEndTypeEnum::AFTER())) {
-            if ($this->recurringConfig->getRepeatedCount()) {
-                return (!$this->endDate || ($currentDate->lte($this->endDate)))
-                    && ((count($this->datesCollection) + $this->recurringConfig->getRepeatedCount()) < $frequencyEndValue);
-            }
-
-            return ((!$this->endDate || $currentDate->lte($this->endDate)) && (count($this->datesCollection) < $frequencyEndValue));
+        if ($this->recurringConfig->getFrequencyEndType() != FrequencyEndTypeEnum::AFTER) {
+            return $currentDate->lte($this->endDate);
         }
 
-        return false;
+        if ($this->recurringConfig->getRepeatedCount()) {
+            return (!$this->endDate || ($currentDate->lte($this->endDate)))
+                && ($this->datesCollection->count() + $this->recurringConfig->getRepeatedCount()) < $frequencyEndValue;
+        }
+
+        return (!$this->endDate || $currentDate->lte($this->endDate))
+            && $this->datesCollection->count() < $frequencyEndValue;
+    }
+
+    private function isStartDateExcepted(): bool
+    {
+        return (bool)$this->recurringConfig->getExceptDates()?->contains(
+            $this->recurringConfig->getStartDate()->copy()->setTime(0, 0)
+        );
     }
 }
