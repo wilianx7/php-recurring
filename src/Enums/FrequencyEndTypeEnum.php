@@ -3,14 +3,20 @@
 
 namespace PhpRecurring\Enums;
 
-use Spatie\Enum\Enum;
-
-/**
- * @method static self NEVER()
- * @method static self IN()
- * @method static self AFTER()
- */
-final class FrequencyEndTypeEnum extends Enum
+enum FrequencyEndTypeEnum
 {
+    case NEVER;
+    case IN;
+    case AFTER;
 
+    public static function from(string $value): ?self
+    {
+        foreach (self::cases() as $case) {
+            if ($case->name == $value) {
+                return $case;
+            }
+        }
+
+        return null;
+    }
 }

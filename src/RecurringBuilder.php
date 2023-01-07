@@ -3,7 +3,10 @@
 
 namespace PhpRecurring;
 
-
+use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
+use PhpRecurring\Exceptions\InvalidFrequencyInterval;
+use PhpRecurring\Exceptions\InvalidRepeatedCount;
+use PhpRecurring\Exceptions\InvalidRepeatIn;
 use PhpRecurring\Traits\DateMatch;
 use PhpRecurring\Traits\GenerateDates;
 use PhpRecurring\Traits\GenerateEndDate;
@@ -17,11 +20,8 @@ class RecurringBuilder
         GenerateEndDate,
         ShouldGenerate;
 
-    private RecurringConfig $recurringConfig;
-
-    public function __construct(RecurringConfig $recurringConfig)
+    public function __construct(private RecurringConfig $recurringConfig)
     {
-        $this->recurringConfig = $recurringConfig;
     }
 
     public static function forConfig(RecurringConfig $recurringConfig): self
@@ -29,6 +29,12 @@ class RecurringBuilder
         return new self($recurringConfig);
     }
 
+    /**
+     * @throws InvalidFrequencyInterval
+     * @throws InvalidFrequencyEndValue
+     * @throws InvalidRepeatIn
+     * @throws InvalidRepeatedCount
+     */
     public function startRecurring(): Collection
     {
         if ($this->recurringConfig->isValid()) {

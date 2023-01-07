@@ -10,53 +10,49 @@ use PhpRecurring\Enums\FrequencyEndTypeEnum;
 
 class GenerateEndDateTest extends AbstractTestCase
 {
-    /** @test */
-    public function never_end_type_end_value_null()
+    public function test_never_end_type_end_value_null(): void
     {
-        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(null, FrequencyEndTypeEnum::NEVER()));
+        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(null, FrequencyEndTypeEnum::NEVER));
     }
 
-    /** @test */
-    public function never_end_type_end_value_two()
+    public function test_never_end_type_end_value_two(): void
     {
-
-        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(2, FrequencyEndTypeEnum::NEVER()));
+        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(2, FrequencyEndTypeEnum::NEVER));
     }
 
-    /** @test */
-    public function after_end_type_end_value_null()
+    public function test_after_end_type_end_value_null(): void
     {
-
-        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(null, FrequencyEndTypeEnum::AFTER()));
+        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(null, FrequencyEndTypeEnum::AFTER));
     }
 
-    /** @test */
-    public function after_end_type_end_value_five()
+    public function test_after_end_type_end_value_five(): void
     {
-
-        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(5, FrequencyEndTypeEnum::AFTER()));
+        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(5, FrequencyEndTypeEnum::AFTER));
     }
 
-    /** @test */
-    public function in_end_type_end_value_null()
+    public function test_in_end_type_end_value_null(): void
     {
 
-        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(null, FrequencyEndTypeEnum::IN()));
+        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(null, FrequencyEndTypeEnum::IN));
     }
 
-    /** @test */
-    public function in_end_type_end_value_set()
+    public function test_in_end_type_end_value_set(): void
     {
+        self::assertEquals(
+            Carbon::create(2020),
+            $this->generateEndDate(Carbon::create(2020), FrequencyEndTypeEnum::IN)
+        );
 
-        self::assertEquals(Carbon::create(2020, 1, 1), $this->generateEndDate(Carbon::create(2020, 1, 1), FrequencyEndTypeEnum::IN()));
-        self::assertEquals(Carbon::create(2020, 1, 1, 8, 0, 0), $this->generateEndDate('2020-01-01 08:00:00', FrequencyEndTypeEnum::IN()));
+        self::assertEquals(
+            Carbon::create(2020, 1, 1, 8),
+            $this->generateEndDate('2020-01-01 08:00:00', FrequencyEndTypeEnum::IN)
+        );
     }
 
-    /** @test */
-    public function in_end_type_invalid_end_value()
+    public function test_in_end_type_invalid_end_value(): void
     {
         $this->expectException(InvalidDateException::class);
 
-        $this->generateEndDate('123;adfsafs;a', FrequencyEndTypeEnum::IN());
+        $this->generateEndDate('123;adfsafs;a', FrequencyEndTypeEnum::IN);
     }
 }
