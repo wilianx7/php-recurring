@@ -3,20 +3,9 @@
 
 namespace PhpRecurring\Enums;
 
-enum FrequencyEndTypeEnum
+enum FrequencyEndTypeEnum: string
 {
-    case NEVER;
-    case IN;
-    case AFTER;
-
-    public static function from(string $value): ?self
-    {
-        foreach (self::cases() as $case) {
-            if ($case->name == $value) {
-                return $case;
-            }
-        }
-
-        return null;
-    }
+    case NEVER = 'NEVER';
+    case IN = 'IN';
+    case AFTER = 'AFTER';
 }
