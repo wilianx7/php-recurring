@@ -27,7 +27,7 @@ class GenerateEndDateTest extends AbstractTestCase
 
     public function test_after_end_type_end_value_five(): void
     {
-        self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(5, FrequencyEndTypeEnum::AFTER));
+        self::assertNull($this->generateEndDate(5, FrequencyEndTypeEnum::AFTER));
     }
 
     public function test_in_end_type_end_value_null(): void
