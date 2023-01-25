@@ -3,24 +3,13 @@
 
 namespace PhpRecurring\Enums;
 
-enum WeekdayEnum
+enum WeekdayEnum: string
 {
-    case SUNDAY;
-    case MONDAY;
-    case TUESDAY;
-    case WEDNESDAY;
-    case THURSDAY;
-    case FRIDAY;
-    case SATURDAY;
-
-    public static function from(string $value): ?self
-    {
-        foreach (self::cases() as $case) {
-            if ($case->name == $value) {
-                return $case;
-            }
-        }
-
-        return null;
-    }
+    case SUNDAY = 'SUNDAY';
+    case MONDAY = 'MONDAY';
+    case TUESDAY = 'TUESDAY';
+    case WEDNESDAY = 'WEDNESDAY';
+    case THURSDAY = 'THURSDAY';
+    case FRIDAY = 'FRIDAY';
+    case SATURDAY = 'SATURDAY';
 }

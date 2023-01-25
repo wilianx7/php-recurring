@@ -2,21 +2,10 @@
 
 namespace PhpRecurring\Enums;
 
-enum FrequencyTypeEnum
+enum FrequencyTypeEnum: string
 {
-    case DAY;
-    case WEEK;
-    case MONTH;
-    case YEAR;
-
-    public static function from(string $value): ?self
-    {
-        foreach (self::cases() as $case) {
-            if ($case->name == $value) {
-                return $case;
-            }
-        }
-
-        return null;
-    }
+    case DAY = 'DAY';
+    case WEEK = 'WEEK';
+    case MONTH = 'MONTH';
+    case YEAR = 'YEAR';
 }

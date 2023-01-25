@@ -38,6 +38,8 @@ class RecurringBuilder
     public function startRecurring(): Collection
     {
         if ($this->recurringConfig->isValid()) {
+            $this->recurringConfig->bindWeekdays();
+
             return $this->generateDates($this->recurringConfig);
         }
 
