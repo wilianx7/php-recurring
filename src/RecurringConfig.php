@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Exception;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
+use PhpRecurring\Enums\WeekdayEnum;
 use PhpRecurring\Exceptions\InvalidExceptDate;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\Exceptions\InvalidFrequencyInterval;
@@ -188,6 +189,21 @@ class RecurringConfig
         }
 
         return $this;
+    }
+
+    /** Ensure repeatIn is instance of WeekdayEnum  */
+    public function bindWeekdays(): void
+    {
+        if ($this->getFrequencyType() === FrequencyTypeEnum::WEEK) {
+            $this->setRepeatIn(
+                array_map(
+                    fn ($weekday) => $weekday instanceof WeekdayEnum
+                        ? $weekday
+                        : WeekdayEnum::from($weekday),
+                    $this->getRepeatIn()
+                )
+            );
+        }
     }
 
     /**
