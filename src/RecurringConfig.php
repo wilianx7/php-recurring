@@ -12,7 +12,7 @@ use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\Exceptions\InvalidFrequencyInterval;
 use PhpRecurring\Exceptions\InvalidRepeatedCount;
 use PhpRecurring\Exceptions\InvalidRepeatIn;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class RecurringConfig
 {

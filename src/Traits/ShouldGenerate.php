@@ -7,7 +7,7 @@ namespace PhpRecurring\Traits;
 use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\RecurringConfig;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 trait ShouldGenerate
 {

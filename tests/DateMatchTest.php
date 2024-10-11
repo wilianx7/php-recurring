@@ -9,7 +9,7 @@ use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
 use PhpRecurring\RecurringConfig;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class DateMatchTest extends AbstractTestCase
 {

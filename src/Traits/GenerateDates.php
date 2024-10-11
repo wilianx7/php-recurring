@@ -7,7 +7,7 @@ use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\RecurringConfig;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 trait GenerateDates
 {
