@@ -10,7 +10,7 @@ use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
 use PhpRecurring\Exceptions\InvalidExceptDate;
 use PhpRecurring\RecurringConfig;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class ShouldIncludeStartDateTest extends AbstractTestCase
 {

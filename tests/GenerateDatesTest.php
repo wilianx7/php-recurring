@@ -8,7 +8,7 @@ use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\RecurringConfig;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class GenerateDatesTest extends AbstractTestCase
 {

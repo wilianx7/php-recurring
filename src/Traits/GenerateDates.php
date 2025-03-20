@@ -3,11 +3,11 @@
 namespace PhpRecurring\Traits;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\RecurringConfig;
-use Tightenco\Collect\Support\Collection;
 
 trait GenerateDates
 {

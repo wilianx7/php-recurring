@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\RecurringConfig;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class ShouldGenerateTest extends AbstractTestCase
 {

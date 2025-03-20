@@ -11,7 +11,7 @@ use PhpRecurring\Traits\DateMatch;
 use PhpRecurring\Traits\GenerateDates;
 use PhpRecurring\Traits\GenerateEndDate;
 use PhpRecurring\Traits\ShouldGenerate;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class RecurringBuilder
 {
