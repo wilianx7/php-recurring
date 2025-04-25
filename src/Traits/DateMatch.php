@@ -32,7 +32,7 @@ trait DateMatch
     private function dateMatchForDay(RecurringConfig $recurringConfig, Carbon $currentDate): bool
     {
         $repeatInterval = $recurringConfig->getFrequencyInterval();
-        $diffInDays = $currentDate->diffInDays($recurringConfig->getStartDate());
+        $diffInDays = (int)$currentDate->diffInDays($recurringConfig->getStartDate());
 
         return $diffInDays != 0 && ($diffInDays % $repeatInterval == 0);
     }
@@ -42,7 +42,7 @@ trait DateMatch
         $currentWeekday = WeekdayEnum::from(strtoupper($currentDate->englishDayOfWeek));
         $repeatIn = $recurringConfig->getRepeatIn();
         $repeatInterval = $recurringConfig->getFrequencyInterval();
-        $diffInWeeks = $currentDate->diffInWeeks($recurringConfig->getStartDate()->startOfWeek());
+        $diffInWeeks = (int)$currentDate->diffInWeeks($recurringConfig->getStartDate()->startOfWeek(), true);
 
         return ($diffInWeeks != 0 && ($diffInWeeks % $repeatInterval == 0)) && (in_array($currentWeekday, $repeatIn));
     }
@@ -51,7 +51,7 @@ trait DateMatch
     {
         $currentDay = $currentDate->day;
         $lastDayOfMonth = $currentDate->daysInMonth;
-        $diffInMonths = $currentDate->diffInMonths($recurringConfig->getStartDate()->startOfMonth());
+        $diffInMonths = (int)$currentDate->diffInMonths($recurringConfig->getStartDate()->startOfMonth());
         $repeatIn = $recurringConfig->getRepeatIn();
         $repeatInterval = $recurringConfig->getFrequencyInterval();
 
@@ -65,7 +65,7 @@ trait DateMatch
         $currentDay = $currentDate->day;
         $currentMonth = $currentDate->month;
         $lastDayOfMonth = $currentDate->daysInMonth;
-        $diffInYears = $currentDate->diffInYears($recurringConfig->getStartDate()->startOfYear());
+        $diffInYears = (int)$currentDate->diffInYears($recurringConfig->getStartDate()->startOfYear());
         $repeatIn = (object)$recurringConfig->getRepeatIn();
         $repeatInterval = $recurringConfig->getFrequencyInterval();
 
