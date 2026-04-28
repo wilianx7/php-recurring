@@ -2,9 +2,9 @@
 
 namespace PhpRecurring;
 
+use PhpRecurring\Actions\Configurations\ValidateRecurringConfigAction;
 use Carbon\Carbon;
 use DateTimeInterface;
-use Exception;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
@@ -246,38 +246,7 @@ class RecurringConfig
      */
     public function isValid(): bool
     {
-        if ($this->frequencyInterval <= 0) {
-            throw new InvalidFrequencyInterval();
-        }
-
-        if ($this->isInvalidFrequencyEndValue()) {
-            throw new InvalidFrequencyEndValue();
-        }
-
-        if ($this->repeatedCount < 0) {
-            throw new InvalidRepeatedCount();
-        }
-
-        if ($this->repeatIn && $this->frequencyType == FrequencyTypeEnum::YEAR) {
-            try {
-                $repeatIn = (object) $this->repeatIn;
-
-                if (!isset($repeatIn->day) || !isset($repeatIn->month)) {
-                    throw new InvalidRepeatIn();
-                }
-            } catch (Exception) {
-                throw new InvalidRepeatIn();
-            }
-        }
-
-        return true;
-    }
-
-    private function isInvalidFrequencyEndValue(): bool
-    {
-        return ($this->frequencyEndType != FrequencyEndTypeEnum::NEVER && !$this->frequencyEndValue)
-            || ($this->frequencyEndType == FrequencyEndTypeEnum::IN && !($this->frequencyEndValue instanceof Carbon))
-            || ($this->frequencyEndType == FrequencyEndTypeEnum::AFTER && !is_int($this->frequencyEndValue));
+        return (new ValidateRecurringConfigAction())->execute($this);
     }
 
     private function toCarbon(DateTimeInterface $date): Carbon

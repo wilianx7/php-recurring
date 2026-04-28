@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpRecurring\Traits;
+namespace PhpRecurring\Actions;
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidDateException;
@@ -8,18 +8,18 @@ use DateTimeInterface;
 use Exception;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 
-trait GenerateEndDate
+class GenerateEndDateAction
 {
-    protected function generateEndDate(
+    public function execute(
         DateTimeInterface|string|int|null $frequencyEndValue,
         FrequencyEndTypeEnum $frequencyEndType
     ): ?Carbon {
         if ($frequencyEndValue) {
-            if ($frequencyEndType == FrequencyEndTypeEnum::AFTER) {
+            if ($frequencyEndType === FrequencyEndTypeEnum::AFTER) {
                 return null;
             }
 
-            if ($frequencyEndType == FrequencyEndTypeEnum::IN) {
+            if ($frequencyEndType === FrequencyEndTypeEnum::IN) {
                 try {
                     if ($frequencyEndValue instanceof DateTimeInterface) {
                         return Carbon::instance($frequencyEndValue);

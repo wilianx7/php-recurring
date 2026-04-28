@@ -101,4 +101,27 @@ class ShouldIncludeStartDateTest extends AbstractTestCase
         self::assertEquals(Carbon::create(2019, 10, 30, 8), $datesCollection[3]);
         self::assertEquals(Carbon::create(2019, 10, 31, 8), $datesCollection[4]);
     }
+
+    public function test_every_week_recurrence_with_include_start_date_and_excepted_start_date(): void
+    {
+        $config = new RecurringConfig();
+
+        $config->setStartDate(Carbon::create(2019, 10, 24, 8))
+            ->setFrequencyType(FrequencyTypeEnum::WEEK)
+            ->setRepeatIn([WeekdayEnum::FRIDAY, WeekdayEnum::MONDAY, WeekdayEnum::WEDNESDAY, WeekdayEnum::THURSDAY])
+            ->setFrequencyInterval(1)
+            ->setFrequencyEndType(FrequencyEndTypeEnum::AFTER)
+            ->setFrequencyEndValue(4)
+            ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59))
+            ->setExceptDates([Carbon::create(2019, 10, 24, 8)])
+            ->setIncludeStartDate(true);
+
+        $datesCollection = $this->generateDates($config);
+
+        self::assertCount(4, $datesCollection);
+        self::assertEquals(Carbon::create(2019, 10, 25, 8), $datesCollection[0]);
+        self::assertEquals(Carbon::create(2019, 10, 28, 8), $datesCollection[1]);
+        self::assertEquals(Carbon::create(2019, 10, 30, 8), $datesCollection[2]);
+        self::assertEquals(Carbon::create(2019, 10, 31, 8), $datesCollection[3]);
+    }
 }

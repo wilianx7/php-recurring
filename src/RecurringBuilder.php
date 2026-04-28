@@ -2,24 +2,22 @@
 
 namespace PhpRecurring;
 
+use PhpRecurring\Actions\GenerateRecurringDatesAction;
+use PhpRecurring\Actions\Configurations\NormalizeRecurringConfigAction;
+use PhpRecurring\Actions\Configurations\ValidateRecurringConfigAction;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\Exceptions\InvalidFrequencyInterval;
 use PhpRecurring\Exceptions\InvalidRepeatedCount;
 use PhpRecurring\Exceptions\InvalidRepeatIn;
-use PhpRecurring\Traits\DateMatch;
-use PhpRecurring\Traits\GenerateDates;
-use PhpRecurring\Traits\GenerateEndDate;
-use PhpRecurring\Traits\ShouldGenerate;
 
 class RecurringBuilder
 {
-    use DateMatch;
-    use GenerateDates;
-    use GenerateEndDate;
-    use ShouldGenerate;
-
-    public function __construct(private RecurringConfig $recurringConfig)
-    {
+    public function __construct(
+        private RecurringConfig $recurringConfig,
+        private ValidateRecurringConfigAction $validateRecurringConfigAction = new ValidateRecurringConfigAction(),
+        private NormalizeRecurringConfigAction $normalizeRecurringConfigAction = new NormalizeRecurringConfigAction(),
+        private GenerateRecurringDatesAction $generateRecurringDatesAction = new GenerateRecurringDatesAction()
+    ) {
     }
 
     public static function forConfig(RecurringConfig $recurringConfig): self
@@ -35,12 +33,10 @@ class RecurringBuilder
      */
     public function startRecurring(): array
     {
-        if ($this->recurringConfig->isValid()) {
-            $this->recurringConfig->bindWeekdays();
+        $this->validateRecurringConfigAction->execute($this->recurringConfig);
 
-            return $this->generateDates($this->recurringConfig);
-        }
-
-        return [];
+        return $this->generateRecurringDatesAction->execute(
+            $this->normalizeRecurringConfigAction->execute($this->recurringConfig)
+        );
     }
 }
