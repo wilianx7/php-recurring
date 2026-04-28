@@ -1,21 +1,18 @@
 <?php
 
-
 namespace PhpRecurring\Tests;
-
 
 use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
-use PhpRecurring\Exceptions\InvalidExceptDate;
 use PhpRecurring\RecurringConfig;
 
 class ShouldIncludeStartDateTest extends AbstractTestCase
 {
     public function test_every_month_recurrence_never_end_with_except_dates_and_not_include_start_date(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 7, 26, 8))
             ->setFrequencyType(FrequencyTypeEnum::MONTH)
@@ -36,7 +33,7 @@ class ShouldIncludeStartDateTest extends AbstractTestCase
 
     public function test_every_month_recurrence_never_end_with_except_dates_and_include_start_date(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 7, 26, 8))
             ->setFrequencyType(FrequencyTypeEnum::MONTH)
@@ -58,7 +55,7 @@ class ShouldIncludeStartDateTest extends AbstractTestCase
 
     public function test_every_day_recurrence_never_end_with_except_dates_and_include_start_date(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $exceptDates = [
             Carbon::create(2019, 12, 26, 8),
@@ -84,7 +81,7 @@ class ShouldIncludeStartDateTest extends AbstractTestCase
 
     public function test_every_week_recurrence_after_end_with_include_start_date(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 10, 24, 8))
             ->setFrequencyType(FrequencyTypeEnum::WEEK)

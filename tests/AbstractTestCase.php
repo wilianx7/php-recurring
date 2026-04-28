@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PhpRecurring\Tests;
-
 
 use PhpRecurring\Traits\DateMatch;
 use PhpRecurring\Traits\GenerateDates;
@@ -12,8 +10,8 @@ use PHPUnit\Framework\TestCase;
 
 abstract class AbstractTestCase extends TestCase
 {
-    use DateMatch,
-        GenerateDates,
-        GenerateEndDate,
-        ShouldGenerate;
+    use DateMatch;
+    use GenerateDates;
+    use GenerateEndDate;
+    use ShouldGenerate;
 }

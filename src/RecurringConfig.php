@@ -40,8 +40,7 @@ class RecurringConfig
         ?int $repeatedCount = null,
         ?array $exceptDates = null,
         bool $includeStartDate = false
-    )
-    {
+    ) {
         $this->startDate = $startDate ? $this->toCarbon($startDate) : Carbon::now()->startOfYear();
         $this->endDate = $endDate ? $this->toCarbon($endDate) : null;
         $this->frequencyType = $frequencyType;
@@ -68,7 +67,7 @@ class RecurringConfig
     }
 
     /** Date when the recurrence will start. */
-    public function setStartDate(DateTimeInterface $startDate): RecurringConfig
+    public function setStartDate(DateTimeInterface $startDate): self
     {
         $this->startDate = $this->toCarbon($startDate);
 
@@ -81,7 +80,7 @@ class RecurringConfig
     }
 
     /** When true, the start date will be included in result of recurring dates. */
-    public function setIncludeStartDate(?bool $includeStartDate): RecurringConfig
+    public function setIncludeStartDate(?bool $includeStartDate): self
     {
         $this->includeStartDate = $includeStartDate;
 
@@ -94,7 +93,7 @@ class RecurringConfig
     }
 
     /** End date for recurrence generation. If null, the end date will be assumed as the end of the current year. */
-    public function setEndDate(?DateTimeInterface $endDate): RecurringConfig
+    public function setEndDate(?DateTimeInterface $endDate): self
     {
         $this->endDate = $endDate ? $this->toCarbon($endDate) : null;
 
@@ -107,7 +106,7 @@ class RecurringConfig
     }
 
     /** How often the recurrence will be generated. DAY | WEEK | MONTH | YEAR. */
-    public function setFrequencyType(FrequencyTypeEnum $frequencyType): RecurringConfig
+    public function setFrequencyType(FrequencyTypeEnum $frequencyType): self
     {
         $this->frequencyType = $frequencyType;
 
@@ -120,7 +119,7 @@ class RecurringConfig
     }
 
     /** Determines the interval between recurrences according to the chosen frequency. */
-    public function setFrequencyInterval(int $frequencyInterval): RecurringConfig
+    public function setFrequencyInterval(int $frequencyInterval): self
     {
         $this->frequencyInterval = $frequencyInterval;
 
@@ -133,7 +132,7 @@ class RecurringConfig
     }
 
     /** Determines when recurrence should be generated according to the frequency chosen. */
-    public function setRepeatIn(string|array|null $repeatIn): RecurringConfig
+    public function setRepeatIn(string|array|null $repeatIn): self
     {
         $this->repeatIn = $repeatIn;
 
@@ -146,7 +145,7 @@ class RecurringConfig
     }
 
     /** Determines what will be the stopping criterion for recurrence generation. NEVER | IN | AFTER. */
-    public function setFrequencyEndType(FrequencyEndTypeEnum $frequencyEndType): RecurringConfig
+    public function setFrequencyEndType(FrequencyEndTypeEnum $frequencyEndType): self
     {
         $this->frequencyEndType = $frequencyEndType;
 
@@ -159,7 +158,7 @@ class RecurringConfig
     }
 
     /** Determines a value according to the chosen stop criterion. */
-    public function setFrequencyEndValue(DateTimeInterface|int|null $frequencyEndValue): RecurringConfig
+    public function setFrequencyEndValue(DateTimeInterface|int|null $frequencyEndValue): self
     {
         $this->frequencyEndValue = $frequencyEndValue instanceof DateTimeInterface
             ? $this->toCarbon($frequencyEndValue)
@@ -174,7 +173,7 @@ class RecurringConfig
     }
 
     /** Date the last recurrence was generated. */
-    public function setLastRepeatedDate(?DateTimeInterface $lastRepeatedDate): RecurringConfig
+    public function setLastRepeatedDate(?DateTimeInterface $lastRepeatedDate): self
     {
         $this->lastRepeatedDate = $lastRepeatedDate ? $this->toCarbon($lastRepeatedDate) : null;
 
@@ -187,7 +186,7 @@ class RecurringConfig
     }
 
     /** How many recurrences have already been generated. */
-    public function setRepeatedCount(?int $repeatedCount): RecurringConfig
+    public function setRepeatedCount(?int $repeatedCount): self
     {
         $this->repeatedCount = $repeatedCount;
 
@@ -203,7 +202,7 @@ class RecurringConfig
      *
      * @throws InvalidExceptDate
      */
-    public function setExceptDates(?array $exceptDates): RecurringConfig
+    public function setExceptDates(?array $exceptDates): self
     {
         if ($exceptDates) {
             $this->exceptDates = [];
@@ -261,7 +260,7 @@ class RecurringConfig
 
         if ($this->repeatIn && $this->frequencyType == FrequencyTypeEnum::YEAR) {
             try {
-                $repeatIn = (object)$this->repeatIn;
+                $repeatIn = (object) $this->repeatIn;
 
                 if (!isset($repeatIn->day) || !isset($repeatIn->month)) {
                     throw new InvalidRepeatIn();

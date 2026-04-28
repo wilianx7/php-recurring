@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PhpRecurring\Tests;
-
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidDateException;
@@ -33,7 +31,6 @@ class GenerateEndDateTest extends AbstractTestCase
 
     public function test_in_end_type_end_value_null(): void
     {
-
         self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(null, FrequencyEndTypeEnum::IN));
     }
 

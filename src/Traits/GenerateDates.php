@@ -90,7 +90,7 @@ trait GenerateDates
     private function getFrequencyEndValue(): int|Carbon
     {
         if ($this->recurringConfig->getFrequencyEndType() == FrequencyEndTypeEnum::AFTER) {
-            $frequencyEndValue = (int)$this->recurringConfig->getFrequencyEndValue();
+            $frequencyEndValue = (int) $this->recurringConfig->getFrequencyEndValue();
 
             if ($frequencyEndValue != 0) {
                 return $frequencyEndValue;

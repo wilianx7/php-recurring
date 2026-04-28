@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PhpRecurring\Tests;
-
 
 use Carbon\Carbon;
 use DateTimeImmutable;
@@ -36,7 +34,7 @@ class RecurringBuilderTest extends AbstractTestCase
 
     public function test_every_day_recurrence_never_end_with_last_repeated_date(): void
     {
-        $recurringConfig = new RecurringConfig ();
+        $recurringConfig = new RecurringConfig();
 
         $recurringConfig->setStartDate(Carbon::create(2019, 12, 26, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)
@@ -79,7 +77,7 @@ class RecurringBuilderTest extends AbstractTestCase
 
     public function test_invalid_frequency_end_value(): void
     {
-        $recurringConfig = new RecurringConfig ();
+        $recurringConfig = new RecurringConfig();
 
         $recurringConfig->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)

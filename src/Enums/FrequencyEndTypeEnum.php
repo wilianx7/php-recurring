@@ -1,6 +1,5 @@
 <?php
 
-
 namespace PhpRecurring\Enums;
 
 enum FrequencyEndTypeEnum: string

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PhpRecurring\Traits;
-
 
 use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyTypeEnum;
@@ -31,7 +29,7 @@ trait DateMatch
     private function dateMatchForDay(RecurringConfig $recurringConfig, Carbon $currentDate): bool
     {
         $repeatInterval = $recurringConfig->getFrequencyInterval();
-        $diffInDays = (int)$currentDate->diffInDays($recurringConfig->getStartDate());
+        $diffInDays = (int) $currentDate->diffInDays($recurringConfig->getStartDate());
 
         return $diffInDays != 0 && ($diffInDays % $repeatInterval == 0);
     }
@@ -41,7 +39,7 @@ trait DateMatch
         $currentWeekday = WeekdayEnum::from(strtoupper($currentDate->englishDayOfWeek));
         $repeatIn = $recurringConfig->getRepeatIn();
         $repeatInterval = $recurringConfig->getFrequencyInterval();
-        $diffInWeeks = (int)$currentDate->diffInWeeks($recurringConfig->getStartDate()->startOfWeek(), true);
+        $diffInWeeks = (int) $currentDate->diffInWeeks($recurringConfig->getStartDate()->startOfWeek(), true);
 
         return ($diffInWeeks != 0 && ($diffInWeeks % $repeatInterval == 0)) && (in_array($currentWeekday, $repeatIn));
     }
@@ -50,7 +48,7 @@ trait DateMatch
     {
         $currentDay = $currentDate->day;
         $lastDayOfMonth = $currentDate->daysInMonth;
-        $diffInMonths = (int)$currentDate->diffInMonths($recurringConfig->getStartDate()->startOfMonth());
+        $diffInMonths = (int) $currentDate->diffInMonths($recurringConfig->getStartDate()->startOfMonth());
         $repeatIn = $recurringConfig->getRepeatIn();
         $repeatInterval = $recurringConfig->getFrequencyInterval();
 
@@ -64,13 +62,13 @@ trait DateMatch
         $currentDay = $currentDate->day;
         $currentMonth = $currentDate->month;
         $lastDayOfMonth = $currentDate->daysInMonth;
-        $diffInYears = (int)$currentDate->diffInYears($recurringConfig->getStartDate()->startOfYear());
-        $repeatIn = (object)$recurringConfig->getRepeatIn();
+        $diffInYears = (int) $currentDate->diffInYears($recurringConfig->getStartDate()->startOfYear());
+        $repeatIn = (object) $recurringConfig->getRepeatIn();
         $repeatInterval = $recurringConfig->getFrequencyInterval();
 
         return $diffInYears != 0 && ($diffInYears % $repeatInterval == 0)
             && $currentMonth == $repeatIn->month
-            && $this->isValidDayOfMonth($currentDay, (int)$repeatIn->day, $lastDayOfMonth);
+            && $this->isValidDayOfMonth($currentDay, (int) $repeatIn->day, $lastDayOfMonth);
     }
 
     private function isValidDayOfMonth(int $currentDay, int $targetDay, int $lastDayOfMonth): bool

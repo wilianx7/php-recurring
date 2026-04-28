@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PhpRecurring\Traits;
-
 
 use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
@@ -12,8 +10,8 @@ trait ShouldGenerate
 {
     protected function shouldGenerate(
         RecurringConfig $recurringConfig,
-        Carbon          $currentDate,
-        array           $datesCollection
+        Carbon $currentDate,
+        array $datesCollection
     ): bool {
         if ($recurringConfig->getLastRepeatedDate()) {
             $currentGeneratedCount = count($datesCollection);
@@ -30,8 +28,13 @@ trait ShouldGenerate
                 case FrequencyEndTypeEnum::AFTER:
                     if ($recurringConfig->getRepeatedCount()) {
                         $totalGeneratedCount = $recurringConfig->getRepeatedCount() + $currentGeneratedCount;
+                        $frequencyEndValue = $recurringConfig->getFrequencyEndValue();
 
-                        return $totalGeneratedCount < $recurringConfig->getFrequencyEndValue()
+                        if (!is_int($frequencyEndValue)) {
+                            return false;
+                        }
+
+                        return $totalGeneratedCount < $frequencyEndValue
                             && $lastRepeatedDate->year < $currentDate->year;
                     }
             }

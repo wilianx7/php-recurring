@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PhpRecurring\Traits;
-
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidDateException;

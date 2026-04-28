@@ -1,6 +1,5 @@
 <?php
 
-
 namespace PhpRecurring;
 
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
@@ -14,10 +13,10 @@ use PhpRecurring\Traits\ShouldGenerate;
 
 class RecurringBuilder
 {
-    use DateMatch,
-        GenerateDates,
-        GenerateEndDate,
-        ShouldGenerate;
+    use DateMatch;
+    use GenerateDates;
+    use GenerateEndDate;
+    use ShouldGenerate;
 
     public function __construct(private RecurringConfig $recurringConfig)
     {

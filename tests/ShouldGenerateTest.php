@@ -1,8 +1,6 @@
 <?php
 
-
 namespace PhpRecurring\Tests;
-
 
 use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;

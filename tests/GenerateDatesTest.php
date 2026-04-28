@@ -13,7 +13,7 @@ class GenerateDatesTest extends AbstractTestCase
 {
     public function test_every_day_recurrence_never_end(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 12, 26, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)
@@ -33,7 +33,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_every_day_recurrence_never_end_with_except_dates(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 12, 26, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)
@@ -52,7 +52,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_every_day_recurrence_never_end_with_last_repeated_date(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 12, 26, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)
@@ -95,7 +95,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_three_days_recurrence_after_end(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)
@@ -114,7 +114,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_three_days_recurrence_after_end_with_repeated_count(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 12, 25, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)
@@ -142,7 +142,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_every_week_recurrence_after_end(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::WEEK)
@@ -162,7 +162,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_three_weeks_recurrence_after_end(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::WEEK)
@@ -182,7 +182,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_every_month_recurrence_in_end(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::MONTH)
@@ -201,7 +201,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_three_months_recurrence_in_end(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::MONTH)
@@ -219,7 +219,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_every_year_recurrence_after_end(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::YEAR)
@@ -240,7 +240,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_three_years_recurrence_after_end(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::YEAR)
@@ -261,7 +261,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_three_years_recurrence_after_end_with_repeated_count(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::YEAR)
@@ -287,7 +287,7 @@ class GenerateDatesTest extends AbstractTestCase
 
     public function test_invalid_frequency_end_value(): void
     {
-        $config = new RecurringConfig ();
+        $config = new RecurringConfig();
 
         $config->setStartDate(Carbon::create(2019, 1, 1, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)

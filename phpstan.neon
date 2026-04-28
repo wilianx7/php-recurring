@@ -1,0 +1,9 @@
+parameters:
+    treatPhpDocTypesAsCertain: false
+    paths:
+        - src
+        - tests
+
+    level: 2
+
+    tmpDir: analyseCache
