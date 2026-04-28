@@ -7,17 +7,16 @@ namespace PhpRecurring\Traits;
 use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\RecurringConfig;
-use Illuminate\Support\Collection;
 
 trait ShouldGenerate
 {
     protected function shouldGenerate(
         RecurringConfig $recurringConfig,
         Carbon          $currentDate,
-        Collection      $datesCollection
+        array           $datesCollection
     ): bool {
         if ($recurringConfig->getLastRepeatedDate()) {
-            $currentGeneratedCount = $datesCollection->count();
+            $currentGeneratedCount = count($datesCollection);
             $lastRepeatedDate = $recurringConfig->getLastRepeatedDate();
 
             switch ($recurringConfig->getFrequencyEndType()) {

@@ -21,7 +21,7 @@ $recurringConfig->setStartDate(Carbon::create(2019, 12, 26, 8, 0, 0))
     ->setFrequencyEndType(FrequencyEndTypeEnum::NEVER())
     ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
 
-$datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
+$dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
 
 
@@ -38,7 +38,7 @@ $recurringConfig->setStartDate(Carbon::create(2019, 1, 1, 8, 0, 0))
     ->setRepeatIn([WeekdayEnum::MONDAY(), WeekdayEnum::SUNDAY()])
     ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
 
-$datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
+$dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
 
 
@@ -55,7 +55,7 @@ $recurringConfig->setStartDate(Carbon::create(2019, 1, 1, 8, 0, 0))
     ->setRepeatIn(27)
     ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
 
-$datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
+$dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
 
 
@@ -72,7 +72,7 @@ $recurringConfig->setStartDate(Carbon::create(2019, 1, 1, 8, 0, 0))
     ->setRepeatIn(['day' => 27, 'month' => 10])
     ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
 
-$datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
+$dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
 
 
@@ -89,7 +89,7 @@ $datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring
 | `frequencyEndValue` | Determines a value according to the chosen stop criterion. Can be setted, for example, as: null (for NEVER); 3 (for AFTER); Carbon::now() (for IN). | Null |
 | `lastRepeatedDate` | Date the last recurrence was generated. It is used to avoid unnecessary date generation by calling the generation method more than once. | Null |
 | `repeatedCount` | How many recurrences have already been generated. It is used to avoid unnecessary date generation by calling the generation method more than once. | Null |
-| `exceptDates` | Dates when recurrence should not be generated even if the date conforms to the specified setting. Accepts native array or Laravel Collection. | Null |
+| `exceptDates` | Dates when recurrence should not be generated even if the date conforms to the specified setting. Accepts native array. | Null |
 | `includeStartDate` | Defines whether the start date should be included in the return array | false |
 
 * **includeStartDate**: By default, the start date is not included in the return array, as it assumes that this date is already in use, requiring only the return of subsequent dates. 
@@ -100,7 +100,7 @@ However, you can override this behavior by setting "includeStartDate" property a
 | **Method** | **Description** | **Return** |
 | :--- | :--- | :--- |
 | `forConfig` | Used to construct the recurrence according to  setting passed by parameter. | Self |
-| `startRecurring` | Start generating dates for recurrence | A collection with all the dates generated |
+| `startRecurring` | Start generating dates for recurrence | An array with all the dates generated |
 
 
 ## Enums

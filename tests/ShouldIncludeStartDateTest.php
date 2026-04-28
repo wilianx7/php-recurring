@@ -10,7 +10,6 @@ use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
 use PhpRecurring\Exceptions\InvalidExceptDate;
 use PhpRecurring\RecurringConfig;
-use Illuminate\Support\Collection;
 
 class ShouldIncludeStartDateTest extends AbstractTestCase
 {
@@ -61,9 +60,11 @@ class ShouldIncludeStartDateTest extends AbstractTestCase
     {
         $config = new RecurringConfig ();
 
-        $exceptDates = new Collection(
-            [Carbon::create(2019, 12, 26, 8), Carbon::create(2019, 12, 28, 8), Carbon::create(2019, 12, 30)]
-        );
+        $exceptDates = [
+            Carbon::create(2019, 12, 26, 8),
+            Carbon::create(2019, 12, 28, 8),
+            Carbon::create(2019, 12, 30),
+        ];
 
         $config->setStartDate(Carbon::create(2019, 12, 26, 8))
             ->setFrequencyType(FrequencyTypeEnum::DAY)

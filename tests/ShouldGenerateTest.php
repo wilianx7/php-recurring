@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\RecurringConfig;
-use Illuminate\Support\Collection;
 
 class ShouldGenerateTest extends AbstractTestCase
 {
@@ -23,7 +22,7 @@ class ShouldGenerateTest extends AbstractTestCase
             ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
 
         $currentDate = Carbon::createFromDate(2019, 12, 26)->addDay();
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertTrue($this->shouldGenerate($recurringConfig, $currentDate, $datesCollection));
     }
@@ -40,7 +39,7 @@ class ShouldGenerateTest extends AbstractTestCase
             ->setLastRepeatedDate(Carbon::createFromDate(2019, 12, 26)->endOfYear());
 
         $currentDate = Carbon::createFromDate(2019, 12, 26)->addDay();
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertFalse($this->shouldGenerate($recurringConfig, $currentDate, $datesCollection));
     }

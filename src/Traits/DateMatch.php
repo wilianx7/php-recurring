@@ -8,14 +8,13 @@ use Carbon\Carbon;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
 use PhpRecurring\RecurringConfig;
-use Illuminate\Support\Collection;
 
 trait DateMatch
 {
     protected function dateMatch(
         RecurringConfig $recurringConfig,
         Carbon $currentDate,
-        Collection $datesCollection
+        array $datesCollection
     ): bool {
         if ($this->shouldGenerate($recurringConfig, $currentDate->copy(), $datesCollection)) {
             return match ($recurringConfig->getFrequencyType()) {

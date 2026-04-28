@@ -12,7 +12,6 @@ use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\Exceptions\InvalidFrequencyInterval;
 use PhpRecurring\Exceptions\InvalidRepeatedCount;
 use PhpRecurring\Exceptions\InvalidRepeatIn;
-use Illuminate\Support\Collection;
 
 class RecurringConfig
 {
@@ -26,7 +25,7 @@ class RecurringConfig
         private Carbon|int|null      $frequencyEndValue = null,
         private ?Carbon              $lastRepeatedDate = null,
         private ?int                 $repeatedCount = null,
-        private ?Collection          $exceptDates = null,
+        private ?array               $exceptDates = null,
         private bool                 $includeStartDate = false
     )
     {
@@ -163,7 +162,7 @@ class RecurringConfig
         return $this;
     }
 
-    public function getExceptDates(): ?Collection
+    public function getExceptDates(): ?array
     {
         return $this->exceptDates;
     }
@@ -172,16 +171,16 @@ class RecurringConfig
      *
      * @throws InvalidExceptDate
      */
-    public function setExceptDates(array|Collection|null $exceptDates): RecurringConfig
+    public function setExceptDates(?array $exceptDates): RecurringConfig
     {
         if ($exceptDates) {
-            $this->exceptDates = new Collection();
+            $this->exceptDates = [];
 
             foreach ($exceptDates as $exceptDate) {
                 if ($exceptDate instanceof Carbon) {
-                    $this->exceptDates->push($exceptDate->setTime(0, 0));
+                    $this->exceptDates[] = $exceptDate->setTime(0, 0);
                 } elseif (Carbon::hasFormat($exceptDate, 'Y-m-d H:i:s')) {
-                    $this->exceptDates->push(Carbon::createFromFormat('Y-m-d H:i:s', $exceptDate)->setTime(0, 0));
+                    $this->exceptDates[] = Carbon::createFromFormat('Y-m-d H:i:s', $exceptDate)->setTime(0, 0);
                 } else {
                     throw new InvalidExceptDate();
                 }

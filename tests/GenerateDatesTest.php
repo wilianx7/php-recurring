@@ -8,7 +8,6 @@ use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\RecurringConfig;
-use Illuminate\Support\Collection;
 
 class GenerateDatesTest extends AbstractTestCase
 {
@@ -41,7 +40,7 @@ class GenerateDatesTest extends AbstractTestCase
             ->setFrequencyInterval(1)
             ->setFrequencyEndType(FrequencyEndTypeEnum::NEVER)
             ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59))
-            ->setExceptDates(new Collection([Carbon::create(2019, 12, 28, 8), Carbon::create(2019, 12, 30)]));
+            ->setExceptDates([Carbon::create(2019, 12, 28, 8), Carbon::create(2019, 12, 30)]);
 
         $datesCollection = $this->generateDates($config);
 
@@ -70,7 +69,7 @@ class GenerateDatesTest extends AbstractTestCase
         self::assertEquals(Carbon::create(2019, 12, 30, 8), $datesCollection[3]);
         self::assertEquals(Carbon::create(2019, 12, 31, 8), $datesCollection[4]);
 
-        $config->setLastRepeatedDate($datesCollection->last());
+        $config->setLastRepeatedDate(end($datesCollection));
         $this->generateDates($config);
         $datesCollection = $this->generateDates($config);
 
@@ -88,7 +87,7 @@ class GenerateDatesTest extends AbstractTestCase
         self::assertEquals(Carbon::create(2020, 12, 30, 8), $datesCollection[3]);
         self::assertEquals(Carbon::create(2020, 12, 31, 8), $datesCollection[4]);
 
-        $config->setLastRepeatedDate($datesCollection->last());
+        $config->setLastRepeatedDate(end($datesCollection));
         $datesCollection = $this->generateDates($config);
 
         self::assertCount(0, $datesCollection);
@@ -130,8 +129,8 @@ class GenerateDatesTest extends AbstractTestCase
         self::assertEquals(Carbon::create(2019, 12, 28, 8), $datesCollection[0]);
         self::assertEquals(Carbon::create(2019, 12, 31, 8), $datesCollection[1]);
 
-        $config->setRepeatedCount($datesCollection->count());
-        $config->setLastRepeatedDate($datesCollection->last());
+        $config->setRepeatedCount(count($datesCollection));
+        $config->setLastRepeatedDate(end($datesCollection));
         $config->setEndDate(Carbon::create(2020, 12, 31));
 
         $datesCollection = $this->generateDates($config);

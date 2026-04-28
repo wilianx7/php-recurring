@@ -11,7 +11,6 @@ use PhpRecurring\Traits\DateMatch;
 use PhpRecurring\Traits\GenerateDates;
 use PhpRecurring\Traits\GenerateEndDate;
 use PhpRecurring\Traits\ShouldGenerate;
-use Illuminate\Support\Collection;
 
 class RecurringBuilder
 {
@@ -35,7 +34,7 @@ class RecurringBuilder
      * @throws InvalidRepeatIn
      * @throws InvalidRepeatedCount
      */
-    public function startRecurring(): Collection
+    public function startRecurring(): array
     {
         if ($this->recurringConfig->isValid()) {
             $this->recurringConfig->bindWeekdays();
@@ -43,6 +42,6 @@ class RecurringBuilder
             return $this->generateDates($this->recurringConfig);
         }
 
-        return new Collection();
+        return [];
     }
 }

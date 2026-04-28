@@ -3,7 +3,6 @@
 namespace PhpRecurring\Traits;
 
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
@@ -13,21 +12,21 @@ trait GenerateDates
 {
     private RecurringConfig $recurringConfig;
     private ?Carbon $endDate;
-    private Collection $datesCollection;
+    private array $generatedDates;
 
     /**
      * @throws InvalidFrequencyEndValue
      */
-    protected function generateDates(RecurringConfig $recurringConfig): Collection
+    protected function generateDates(RecurringConfig $recurringConfig): array
     {
         $this->recurringConfig = $recurringConfig;
-        $this->datesCollection = new Collection();
+        $this->generatedDates = [];
         $this->bindEndDate();
         $frequencyEndValue = $this->getFrequencyEndValue();
 
         if ($this->recurringConfig->getIncludeStartDate()) {
             if (!$this->isStartDateExcepted()) {
-                $this->datesCollection->push($recurringConfig->getStartDate()->copy());
+                $this->generatedDates[] = $recurringConfig->getStartDate()->copy();
             }
 
             $this->bindStartDate();
@@ -36,23 +35,23 @@ trait GenerateDates
         $currentDate = $recurringConfig->getStartDate()->copy();
 
         while ($this->getWhileCondition($currentDate, $frequencyEndValue)) {
-            if ($recurringConfig->getExceptDates()?->contains($currentDate->copy()->setTime(0, 0))) {
+            if ($this->isDateExcepted($currentDate)) {
                 continue;
             }
 
             if (
-                $recurringConfig->getIncludeStartDate() && $this->datesCollection->isNotEmpty()
-                && $currentDate->copy()->lte($this->datesCollection->first())
+                $recurringConfig->getIncludeStartDate() && !empty($this->generatedDates)
+                && $currentDate->copy()->lte($this->generatedDates[0])
             ) {
                 continue;
             }
 
-            if ($this->dateMatch($this->recurringConfig, $currentDate->copy(), $this->datesCollection)) {
-                $this->datesCollection->push($currentDate->copy());
+            if ($this->dateMatch($this->recurringConfig, $currentDate->copy(), $this->generatedDates)) {
+                $this->generatedDates[] = $currentDate->copy();
             }
         }
 
-        return $this->datesCollection;
+        return $this->generatedDates;
     }
 
     private function bindStartDate(): void
@@ -113,17 +112,31 @@ trait GenerateDates
 
         if ($this->recurringConfig->getRepeatedCount()) {
             return (!$this->endDate || ($currentDate->lte($this->endDate)))
-                && ($this->datesCollection->count() + $this->recurringConfig->getRepeatedCount()) < $frequencyEndValue;
+                && (count($this->generatedDates) + $this->recurringConfig->getRepeatedCount()) < $frequencyEndValue;
         }
 
         return (!$this->endDate || $currentDate->lte($this->endDate))
-            && $this->datesCollection->count() < $frequencyEndValue;
+            && count($this->generatedDates) < $frequencyEndValue;
     }
 
     private function isStartDateExcepted(): bool
     {
-        return (bool)$this->recurringConfig->getExceptDates()?->contains(
-            $this->recurringConfig->getStartDate()->copy()->setTime(0, 0)
-        );
+        return $this->dateMatchesExceptDates($this->recurringConfig->getStartDate()->copy()->setTime(0, 0));
+    }
+
+    private function isDateExcepted(Carbon $currentDate): bool
+    {
+        return $this->dateMatchesExceptDates($currentDate->copy()->setTime(0, 0));
+    }
+
+    private function dateMatchesExceptDates(Carbon $date): bool
+    {
+        foreach ($this->recurringConfig->getExceptDates() ?? [] as $exceptDate) {
+            if ($exceptDate->equalTo($date)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

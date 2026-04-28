@@ -52,7 +52,7 @@ class RecurringBuilderTest extends AbstractTestCase
         self::assertEquals(Carbon::create(2019, 12, 30, 8), $datesCollection[3]);
         self::assertEquals(Carbon::create(2019, 12, 31, 8), $datesCollection[4]);
 
-        $recurringConfig->setLastRepeatedDate($datesCollection->last());
+        $recurringConfig->setLastRepeatedDate(end($datesCollection));
         RecurringBuilder::forConfig($recurringConfig)->startRecurring();
         $datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 
@@ -70,7 +70,7 @@ class RecurringBuilderTest extends AbstractTestCase
         self::assertEquals(Carbon::create(2020, 12, 30, 8), $datesCollection[3]);
         self::assertEquals(Carbon::create(2020, 12, 31, 8), $datesCollection[4]);
 
-        $recurringConfig->setLastRepeatedDate($datesCollection->last());
+        $recurringConfig->setLastRepeatedDate(end($datesCollection));
         $datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 
         self::assertCount(0, $datesCollection);

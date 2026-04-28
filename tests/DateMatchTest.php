@@ -9,7 +9,6 @@ use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
 use PhpRecurring\RecurringConfig;
-use Illuminate\Support\Collection;
 
 class DateMatchTest extends AbstractTestCase
 {
@@ -23,7 +22,7 @@ class DateMatchTest extends AbstractTestCase
             ->setFrequencyEndType(FrequencyEndTypeEnum::NEVER);
 
         $currentDate = Carbon::createFromDate(2019, 12, 26)->addDay();
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertTrue($this->dateMatch($config, $currentDate, $datesCollection));
     }
@@ -38,7 +37,7 @@ class DateMatchTest extends AbstractTestCase
             ->setFrequencyEndType(FrequencyEndTypeEnum::NEVER);
 
         $currentDate = Carbon::createFromDate(2019, 12, 26)->addDay();
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertFalse($this->dateMatch($config, $currentDate, $datesCollection));
         self::assertTrue($this->dateMatch($config, $currentDate->addDays(2), $datesCollection));
@@ -55,7 +54,7 @@ class DateMatchTest extends AbstractTestCase
             ->setRepeatIn([WeekdayEnum::MONDAY, WeekdayEnum::FRIDAY]);
 
         $currentDate = Carbon::createFromDate(2019, 12, 2);
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertFalse($this->dateMatch($config, $currentDate, $datesCollection));
         self::assertTrue($this->dateMatch($config, $currentDate->addWeeks(1), $datesCollection));
@@ -76,7 +75,7 @@ class DateMatchTest extends AbstractTestCase
             ->setRepeatIn([WeekdayEnum::MONDAY, WeekdayEnum::FRIDAY]);
 
         $currentDate = Carbon::createFromDate(2019, 12, 2);
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertFalse($this->dateMatch($config, $currentDate, $datesCollection));
         self::assertTrue($this->dateMatch($config, $currentDate->addWeeks(3), $datesCollection));
@@ -95,7 +94,7 @@ class DateMatchTest extends AbstractTestCase
             ->setRepeatIn(10);
 
         $currentDate = Carbon::createFromDate(2019, 8, 2);
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertFalse($this->dateMatch($config, $currentDate->addMonth(), $datesCollection));
         self::assertTrue($this->dateMatch($config, $currentDate->addDays(8), $datesCollection));
@@ -116,7 +115,7 @@ class DateMatchTest extends AbstractTestCase
             ->setRepeatIn(10);
 
         $currentDate = Carbon::createFromDate(2019, 1, 10);
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertFalse($this->dateMatch($config, $currentDate->addMonth(), $datesCollection));
         self::assertTrue($this->dateMatch($config, $currentDate->addMonths(4), $datesCollection));
@@ -135,7 +134,7 @@ class DateMatchTest extends AbstractTestCase
             ->setRepeatIn(['day' => 2, 'month' => 9]);
 
         $currentDate = Carbon::createFromDate(2019, 8, 2);
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertFalse($this->dateMatch($config, $currentDate->addMonth(), $datesCollection));
         self::assertTrue($this->dateMatch($config, $currentDate->addYear(), $datesCollection));
@@ -154,7 +153,7 @@ class DateMatchTest extends AbstractTestCase
             ->setRepeatIn(['day' => 2, 'month' => 9]);
 
         $currentDate = Carbon::createFromDate(2019, 8, 2);
-        $datesCollection = new Collection();
+        $datesCollection = [];
 
         self::assertFalse($this->dateMatch($config, $currentDate->addMonth(), $datesCollection));
         self::assertTrue($this->dateMatch($config, $currentDate->addYears(2), $datesCollection));
