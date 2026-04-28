@@ -5,6 +5,7 @@ namespace PhpRecurring\Tests;
 
 
 use Carbon\Carbon;
+use DateTimeImmutable;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
@@ -91,5 +92,25 @@ class RecurringBuilderTest extends AbstractTestCase
         $datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 
         self::assertEmpty($datesCollection);
+    }
+
+    public function test_accepts_datetime_interface_in_builder_configuration(): void
+    {
+        $recurringConfig = new RecurringConfig();
+
+        $recurringConfig->setStartDate(new DateTimeImmutable('2019-12-26 08:00:00'))
+            ->setFrequencyType(FrequencyTypeEnum::DAY)
+            ->setFrequencyInterval(1)
+            ->setFrequencyEndType(FrequencyEndTypeEnum::NEVER)
+            ->setEndDate(new DateTimeImmutable('2019-12-31 23:59:59'));
+
+        $datesCollection = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
+
+        self::assertCount(5, $datesCollection);
+        self::assertEquals(Carbon::create(2019, 12, 27, 8), $datesCollection[0]);
+        self::assertEquals(Carbon::create(2019, 12, 28, 8), $datesCollection[1]);
+        self::assertEquals(Carbon::create(2019, 12, 29, 8), $datesCollection[2]);
+        self::assertEquals(Carbon::create(2019, 12, 30, 8), $datesCollection[3]);
+        self::assertEquals(Carbon::create(2019, 12, 31, 8), $datesCollection[4]);
     }
 }

@@ -10,16 +10,21 @@ composer require wilianx7/php-recurring
 
 
 ## Basic usage
+`RecurringConfig` accepts any `DateTimeInterface` in its date setters, so you can use `Carbon`, `DateTime`, or `DateTimeImmutable`.
+
 - Configuration for every day recurrence ending never:
 
 ```php
+$startDate = new DateTimeImmutable('2019-12-26 08:00:00');
+$endDate = new DateTimeImmutable('2019-12-31 23:59:59');
+
 $recurringConfig = new RecurringConfig();
 
-$recurringConfig->setStartDate(Carbon::create(2019, 12, 26, 8, 0, 0))
+$recurringConfig->setStartDate($startDate)
     ->setFrequencyType(FrequencyTypeEnum::DAY())
     ->setFrequencyInterval(1)
     ->setFrequencyEndType(FrequencyEndTypeEnum::NEVER())
-    ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
+    ->setEndDate($endDate);
 
 $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
@@ -30,13 +35,13 @@ $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```php
 $recurringConfig = new RecurringConfig();
 
-$recurringConfig->setStartDate(Carbon::create(2019, 1, 1, 8, 0, 0))
+$recurringConfig->setStartDate(new DateTimeImmutable('2019-01-01 08:00:00'))
     ->setFrequencyType(FrequencyTypeEnum::WEEK())
     ->setFrequencyInterval(1)
     ->setFrequencyEndType(FrequencyEndTypeEnum::AFTER())
     ->setFrequencyEndValue(5)
     ->setRepeatIn([WeekdayEnum::MONDAY(), WeekdayEnum::SUNDAY()])
-    ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
+    ->setEndDate(new DateTimeImmutable('2019-12-31 23:59:59'));
 
 $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
@@ -47,13 +52,13 @@ $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```php
 $recurringConfig = new RecurringConfig();
 
-$recurringConfig->setStartDate(Carbon::create(2019, 1, 1, 8, 0, 0))
+$recurringConfig->setStartDate(new DateTimeImmutable('2019-01-01 08:00:00'))
     ->setFrequencyType(FrequencyTypeEnum::MONTH())
     ->setFrequencyInterval(1)
     ->setFrequencyEndType(FrequencyEndTypeEnum::IN())
-    ->setFrequencyEndValue(Carbon::create(2019, 11, 30))
+    ->setFrequencyEndValue(new DateTimeImmutable('2019-11-30 00:00:00'))
     ->setRepeatIn(27)
-    ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
+    ->setEndDate(new DateTimeImmutable('2019-12-31 23:59:59'));
 
 $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
@@ -64,13 +69,13 @@ $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```php
 $recurringConfig = new RecurringConfig();
 
-$recurringConfig->setStartDate(Carbon::create(2019, 1, 1, 8, 0, 0))
+$recurringConfig->setStartDate(new DateTimeImmutable('2019-01-01 08:00:00'))
     ->setFrequencyType(FrequencyTypeEnum::MONTH())
     ->setFrequencyInterval(1)
     ->setFrequencyEndType(FrequencyEndTypeEnum::IN())
-    ->setFrequencyEndValue(Carbon::create(2019, 11, 30))
+    ->setFrequencyEndValue(new DateTimeImmutable('2019-11-30 00:00:00'))
     ->setRepeatIn(['day' => 27, 'month' => 10])
-    ->setEndDate(Carbon::create(2019, 12, 31, 23, 59, 59));
+    ->setEndDate(new DateTimeImmutable('2019-12-31 23:59:59'));
 
 $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
@@ -86,7 +91,7 @@ $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 | `frequencyInterval` | Determines the interval between recurrences according to the chosen frequency type. | 1 |
 | `repeatIn` | Determines when recurrence should be generated according to the frequency type chosen. Can be setted, for example, as: null (for **DAY**); [ WeekdayEnum::MONDAY(), WeekdayEnum::SUNDAY() ] (for **WEEK**); 31 (for **MONTH**); ['day' => 31, 'month' => 2] (for **YEAR**)." | Null |
 | `frequencyEndType` | Determines what will be the stopping criterion for recurrence generation according of the enum FrequencyEndTypeEnum. Can be setted as: **NEVER**, **IN** or **AFTER**. | FrequencyEndTypeEnum::NEVER() |
-| `frequencyEndValue` | Determines a value according to the chosen stop criterion. Can be setted, for example, as: null (for NEVER); 3 (for AFTER); Carbon::now() (for IN). | Null |
+| `frequencyEndValue` | Determines a value according to the chosen stop criterion. Can be setted, for example, as: null (for NEVER); 3 (for AFTER); any `DateTimeInterface` instance such as `DateTimeImmutable` or `Carbon` (for IN). | Null |
 | `lastRepeatedDate` | Date the last recurrence was generated. It is used to avoid unnecessary date generation by calling the generation method more than once. | Null |
 | `repeatedCount` | How many recurrences have already been generated. It is used to avoid unnecessary date generation by calling the generation method more than once. | Null |
 | `exceptDates` | Dates when recurrence should not be generated even if the date conforms to the specified setting. Accepts native array. | Null |
