@@ -1,11 +1,10 @@
 <?php
 
-
 namespace PhpRecurring\Tests;
-
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidDateException;
+use DateTimeImmutable;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 
 class GenerateEndDateTest extends AbstractTestCase
@@ -32,7 +31,6 @@ class GenerateEndDateTest extends AbstractTestCase
 
     public function test_in_end_type_end_value_null(): void
     {
-
         self::assertEquals(Carbon::now()->endOfYear(), $this->generateEndDate(null, FrequencyEndTypeEnum::IN));
     }
 
@@ -46,6 +44,11 @@ class GenerateEndDateTest extends AbstractTestCase
         self::assertEquals(
             Carbon::create(2020, 1, 1, 8),
             $this->generateEndDate('2020-01-01 08:00:00', FrequencyEndTypeEnum::IN)
+        );
+
+        self::assertEquals(
+            Carbon::create(2020, 2, 3, 4, 5, 6),
+            $this->generateEndDate(new DateTimeImmutable('2020-02-03 04:05:06'), FrequencyEndTypeEnum::IN)
         );
     }
 

@@ -2,8 +2,9 @@
 
 namespace PhpRecurring;
 
+use PhpRecurring\Actions\Configurations\ValidateRecurringConfigAction;
 use Carbon\Carbon;
-use Exception;
+use DateTimeInterface;
 use PhpRecurring\Enums\FrequencyEndTypeEnum;
 use PhpRecurring\Enums\FrequencyTypeEnum;
 use PhpRecurring\Enums\WeekdayEnum;
@@ -12,25 +13,52 @@ use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\Exceptions\InvalidFrequencyInterval;
 use PhpRecurring\Exceptions\InvalidRepeatedCount;
 use PhpRecurring\Exceptions\InvalidRepeatIn;
-use Illuminate\Support\Collection;
 
 class RecurringConfig
 {
+    private Carbon $startDate;
+    private ?Carbon $endDate;
+    private FrequencyTypeEnum $frequencyType;
+    private int $frequencyInterval;
+    private string|array|null $repeatIn;
+    private FrequencyEndTypeEnum $frequencyEndType;
+    private Carbon|int|null $frequencyEndValue;
+    private ?Carbon $lastRepeatedDate;
+    private ?int $repeatedCount;
+    private ?array $exceptDates;
+    private bool $includeStartDate;
+
     public function __construct(
-        private ?Carbon              $startDate = null,
-        private ?Carbon              $endDate = null,
-        private FrequencyTypeEnum    $frequencyType = FrequencyTypeEnum::DAY,
-        private int                  $frequencyInterval = 1,
-        private string|array|null    $repeatIn = null,
-        private FrequencyEndTypeEnum $frequencyEndType = FrequencyEndTypeEnum::NEVER,
-        private Carbon|int|null      $frequencyEndValue = null,
-        private ?Carbon              $lastRepeatedDate = null,
-        private ?int                 $repeatedCount = null,
-        private ?Collection          $exceptDates = null,
-        private bool                 $includeStartDate = false
-    )
-    {
-        $this->startDate = Carbon::now()->startOfYear();
+        ?DateTimeInterface $startDate = null,
+        ?DateTimeInterface $endDate = null,
+        FrequencyTypeEnum $frequencyType = FrequencyTypeEnum::DAY,
+        int $frequencyInterval = 1,
+        string|array|null $repeatIn = null,
+        FrequencyEndTypeEnum $frequencyEndType = FrequencyEndTypeEnum::NEVER,
+        DateTimeInterface|int|null $frequencyEndValue = null,
+        ?DateTimeInterface $lastRepeatedDate = null,
+        ?int $repeatedCount = null,
+        ?array $exceptDates = null,
+        bool $includeStartDate = false
+    ) {
+        $this->startDate = $startDate ? $this->toCarbon($startDate) : Carbon::now()->startOfYear();
+        $this->endDate = $endDate ? $this->toCarbon($endDate) : null;
+        $this->frequencyType = $frequencyType;
+        $this->frequencyInterval = $frequencyInterval;
+        $this->repeatIn = $repeatIn;
+        $this->frequencyEndType = $frequencyEndType;
+        $this->lastRepeatedDate = $lastRepeatedDate ? $this->toCarbon($lastRepeatedDate) : null;
+        $this->repeatedCount = $repeatedCount;
+        $this->exceptDates = null;
+        $this->includeStartDate = $includeStartDate;
+
+        $this->frequencyEndValue = $frequencyEndValue instanceof DateTimeInterface
+            ? $this->toCarbon($frequencyEndValue)
+            : $frequencyEndValue;
+
+        if ($exceptDates) {
+            $this->setExceptDates($exceptDates);
+        }
     }
 
     public function getStartDate(): Carbon
@@ -39,9 +67,9 @@ class RecurringConfig
     }
 
     /** Date when the recurrence will start. */
-    public function setStartDate(Carbon $startDate): RecurringConfig
+    public function setStartDate(DateTimeInterface $startDate): self
     {
-        $this->startDate = $startDate;
+        $this->startDate = $this->toCarbon($startDate);
 
         return $this;
     }
@@ -52,7 +80,7 @@ class RecurringConfig
     }
 
     /** When true, the start date will be included in result of recurring dates. */
-    public function setIncludeStartDate(?bool $includeStartDate): RecurringConfig
+    public function setIncludeStartDate(?bool $includeStartDate): self
     {
         $this->includeStartDate = $includeStartDate;
 
@@ -65,9 +93,9 @@ class RecurringConfig
     }
 
     /** End date for recurrence generation. If null, the end date will be assumed as the end of the current year. */
-    public function setEndDate(?Carbon $endDate): RecurringConfig
+    public function setEndDate(?DateTimeInterface $endDate): self
     {
-        $this->endDate = $endDate;
+        $this->endDate = $endDate ? $this->toCarbon($endDate) : null;
 
         return $this;
     }
@@ -78,7 +106,7 @@ class RecurringConfig
     }
 
     /** How often the recurrence will be generated. DAY | WEEK | MONTH | YEAR. */
-    public function setFrequencyType(FrequencyTypeEnum $frequencyType): RecurringConfig
+    public function setFrequencyType(FrequencyTypeEnum $frequencyType): self
     {
         $this->frequencyType = $frequencyType;
 
@@ -91,7 +119,7 @@ class RecurringConfig
     }
 
     /** Determines the interval between recurrences according to the chosen frequency. */
-    public function setFrequencyInterval(int $frequencyInterval): RecurringConfig
+    public function setFrequencyInterval(int $frequencyInterval): self
     {
         $this->frequencyInterval = $frequencyInterval;
 
@@ -104,7 +132,7 @@ class RecurringConfig
     }
 
     /** Determines when recurrence should be generated according to the frequency chosen. */
-    public function setRepeatIn(string|array|null $repeatIn): RecurringConfig
+    public function setRepeatIn(string|array|null $repeatIn): self
     {
         $this->repeatIn = $repeatIn;
 
@@ -117,7 +145,7 @@ class RecurringConfig
     }
 
     /** Determines what will be the stopping criterion for recurrence generation. NEVER | IN | AFTER. */
-    public function setFrequencyEndType(FrequencyEndTypeEnum $frequencyEndType): RecurringConfig
+    public function setFrequencyEndType(FrequencyEndTypeEnum $frequencyEndType): self
     {
         $this->frequencyEndType = $frequencyEndType;
 
@@ -130,9 +158,11 @@ class RecurringConfig
     }
 
     /** Determines a value according to the chosen stop criterion. */
-    public function setFrequencyEndValue(Carbon|int|null $frequencyEndValue): RecurringConfig
+    public function setFrequencyEndValue(DateTimeInterface|int|null $frequencyEndValue): self
     {
-        $this->frequencyEndValue = $frequencyEndValue;
+        $this->frequencyEndValue = $frequencyEndValue instanceof DateTimeInterface
+            ? $this->toCarbon($frequencyEndValue)
+            : $frequencyEndValue;
 
         return $this;
     }
@@ -143,9 +173,9 @@ class RecurringConfig
     }
 
     /** Date the last recurrence was generated. */
-    public function setLastRepeatedDate(?Carbon $lastRepeatedDate): RecurringConfig
+    public function setLastRepeatedDate(?DateTimeInterface $lastRepeatedDate): self
     {
-        $this->lastRepeatedDate = $lastRepeatedDate;
+        $this->lastRepeatedDate = $lastRepeatedDate ? $this->toCarbon($lastRepeatedDate) : null;
 
         return $this;
     }
@@ -156,14 +186,14 @@ class RecurringConfig
     }
 
     /** How many recurrences have already been generated. */
-    public function setRepeatedCount(?int $repeatedCount): RecurringConfig
+    public function setRepeatedCount(?int $repeatedCount): self
     {
         $this->repeatedCount = $repeatedCount;
 
         return $this;
     }
 
-    public function getExceptDates(): ?Collection
+    public function getExceptDates(): ?array
     {
         return $this->exceptDates;
     }
@@ -172,16 +202,16 @@ class RecurringConfig
      *
      * @throws InvalidExceptDate
      */
-    public function setExceptDates(array|Collection|null $exceptDates): RecurringConfig
+    public function setExceptDates(?array $exceptDates): self
     {
         if ($exceptDates) {
-            $this->exceptDates = new Collection();
+            $this->exceptDates = [];
 
             foreach ($exceptDates as $exceptDate) {
-                if ($exceptDate instanceof Carbon) {
-                    $this->exceptDates->push($exceptDate->setTime(0, 0));
+                if ($exceptDate instanceof DateTimeInterface) {
+                    $this->exceptDates[] = $this->toCarbon($exceptDate)->setTime(0, 0);
                 } elseif (Carbon::hasFormat($exceptDate, 'Y-m-d H:i:s')) {
-                    $this->exceptDates->push(Carbon::createFromFormat('Y-m-d H:i:s', $exceptDate)->setTime(0, 0));
+                    $this->exceptDates[] = Carbon::createFromFormat('Y-m-d H:i:s', $exceptDate)->setTime(0, 0);
                 } else {
                     throw new InvalidExceptDate();
                 }
@@ -216,37 +246,11 @@ class RecurringConfig
      */
     public function isValid(): bool
     {
-        if ($this->frequencyInterval <= 0) {
-            throw new InvalidFrequencyInterval();
-        }
-
-        if ($this->isInvalidFrequencyEndValue()) {
-            throw new InvalidFrequencyEndValue();
-        }
-
-        if ($this->repeatedCount < 0) {
-            throw new InvalidRepeatedCount();
-        }
-
-        if ($this->repeatIn && $this->frequencyType == FrequencyTypeEnum::YEAR) {
-            try {
-                $repeatIn = (object)$this->repeatIn;
-
-                if (!isset($repeatIn->day) || !isset($repeatIn->month)) {
-                    throw new InvalidRepeatIn();
-                }
-            } catch (Exception) {
-                throw new InvalidRepeatIn();
-            }
-        }
-
-        return true;
+        return (new ValidateRecurringConfigAction())->execute($this);
     }
 
-    private function isInvalidFrequencyEndValue(): bool
+    private function toCarbon(DateTimeInterface $date): Carbon
     {
-        return ($this->frequencyEndType != FrequencyEndTypeEnum::NEVER && !$this->frequencyEndValue)
-            || ($this->frequencyEndType == FrequencyEndTypeEnum::IN && !($this->frequencyEndValue instanceof Carbon))
-            || ($this->frequencyEndType == FrequencyEndTypeEnum::AFTER && !is_int($this->frequencyEndValue));
+        return $date instanceof Carbon ? $date : Carbon::instance($date);
     }
 }

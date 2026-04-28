@@ -1,7 +1,21 @@
 {
-  "description": "PHP library to make getting dates easier when working with recurring tasks.",
+  "description": "PHP library for generating recurring dates, schedules, and repeated task recurrences.",
   "type": "library",
-  "keywords": ["recurring", "recurrence","date", "dates", "composer", "package", "library", "tasks"],
+  "keywords": [
+    "php",
+    "recurring",
+    "recurrence",
+    "recurrence-rule",
+    "rrule",
+    "schedule",
+    "scheduling",
+    "calendar",
+    "date-generator",
+    "task-scheduling",
+    "repeat-events",
+    "repeat-dates",
+    "carbon"
+  ],
   "name": "wilianx7/php-recurring",
   "homepage": "https://github.com/wilianx7/php-recurring",
   "license": "MIT",
@@ -14,12 +28,13 @@
   ],
   "require": {
     "php": "^8.3|^8.4",
-    "nesbot/carbon": "^2.73|^3.9",
-    "illuminate/collections": "^10.0|^11.0|^12.0"
+    "nesbot/carbon": "^2.73|^3.9"
   },
   "require-dev": {
-    "phpunit/phpunit": "^10.0|^11.0|^12.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "friendsofphp/php-cs-fixer": "3.75.0",
+    "phpstan/phpstan": "2.1.12",
+    "phpunit/phpunit": "^10.0|^11.0|^12.0"
   },
   "autoload": {
     "psr-4": {
@@ -32,6 +47,10 @@
     }
   },
   "scripts": {
+    "analyse": "phpstan analyse",
+    "clear-analyse-cache": "vendor/bin/phpstan clear-result-cache",
+    "lint": "php-cs-fixer fix --dry-run --diff --config .phpcs.dist",
+    "fix-lint": "php-cs-fixer fix --diff --config .phpcs.dist",
     "test": "vendor/bin/phpunit",
     "test-coverage": "phpunit --coverage-html coverage"
   },

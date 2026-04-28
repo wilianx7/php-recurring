@@ -1,27 +1,23 @@
 <?php
 
-
 namespace PhpRecurring;
 
+use PhpRecurring\Actions\GenerateRecurringDatesAction;
+use PhpRecurring\Actions\Configurations\NormalizeRecurringConfigAction;
+use PhpRecurring\Actions\Configurations\ValidateRecurringConfigAction;
 use PhpRecurring\Exceptions\InvalidFrequencyEndValue;
 use PhpRecurring\Exceptions\InvalidFrequencyInterval;
 use PhpRecurring\Exceptions\InvalidRepeatedCount;
 use PhpRecurring\Exceptions\InvalidRepeatIn;
-use PhpRecurring\Traits\DateMatch;
-use PhpRecurring\Traits\GenerateDates;
-use PhpRecurring\Traits\GenerateEndDate;
-use PhpRecurring\Traits\ShouldGenerate;
-use Illuminate\Support\Collection;
 
 class RecurringBuilder
 {
-    use DateMatch,
-        GenerateDates,
-        GenerateEndDate,
-        ShouldGenerate;
-
-    public function __construct(private RecurringConfig $recurringConfig)
-    {
+    public function __construct(
+        private RecurringConfig $recurringConfig,
+        private ValidateRecurringConfigAction $validateRecurringConfigAction = new ValidateRecurringConfigAction(),
+        private NormalizeRecurringConfigAction $normalizeRecurringConfigAction = new NormalizeRecurringConfigAction(),
+        private GenerateRecurringDatesAction $generateRecurringDatesAction = new GenerateRecurringDatesAction()
+    ) {
     }
 
     public static function forConfig(RecurringConfig $recurringConfig): self
@@ -35,14 +31,12 @@ class RecurringBuilder
      * @throws InvalidRepeatIn
      * @throws InvalidRepeatedCount
      */
-    public function startRecurring(): Collection
+    public function startRecurring(): array
     {
-        if ($this->recurringConfig->isValid()) {
-            $this->recurringConfig->bindWeekdays();
+        $this->validateRecurringConfigAction->execute($this->recurringConfig);
 
-            return $this->generateDates($this->recurringConfig);
-        }
-
-        return new Collection();
+        return $this->generateRecurringDatesAction->execute(
+            $this->normalizeRecurringConfigAction->execute($this->recurringConfig)
+        );
     }
 }
