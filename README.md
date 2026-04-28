@@ -1,5 +1,16 @@
 # PHP Recurring
-PHP library to make getting dates easier when working with recurring tasks.
+PHP library for generating recurring dates for schedules, repeated tasks, and calendar-like recurrence rules.
+
+Supports daily, weekly, monthly, and yearly recurrences with custom intervals, end conditions, skipped dates, and `Carbon` or `DateTimeInterface` inputs.
+
+Useful for:
+
+- recurring tasks
+- recurring events
+- appointment schedules
+- reminder schedules
+- repeated billing dates
+- calendar-style date generation
 
 ## Installation
 You can install the package via composer:
@@ -8,8 +19,16 @@ You can install the package via composer:
 composer require wilianx7/php-recurring
 ```
 
+## Features
+
+- Generate recurring dates for daily, weekly, monthly, and yearly schedules
+- Set recurrence end rules with `NEVER`, `IN`, or `AFTER`
+- Skip specific dates with `exceptDates`
+- Optionally include the start date in the generated collection
+- Use `Carbon`, `DateTime`, or `DateTimeImmutable` in configuration
 
 ## Basic usage
+
 `RecurringConfig` accepts any `DateTimeInterface` in its date setters, so you can use `Carbon`, `DateTime`, or `DateTimeImmutable`.
 
 - Configuration for every day recurrence ending never:
@@ -64,13 +83,13 @@ $dates = RecurringBuilder::forConfig($recurringConfig)->startRecurring();
 ```
 
 
-- Configuration for yearly recurrence (day 27 and month 10) ending never:
+- Configuration for yearly recurrence (day 27 and month 10) ending in 2019-11-30:
 
 ```php
 $recurringConfig = new RecurringConfig();
 
 $recurringConfig->setStartDate(new DateTimeImmutable('2019-01-01 08:00:00'))
-    ->setFrequencyType(FrequencyTypeEnum::MONTH())
+    ->setFrequencyType(FrequencyTypeEnum::YEAR())
     ->setFrequencyInterval(1)
     ->setFrequencyEndType(FrequencyEndTypeEnum::IN())
     ->setFrequencyEndValue(new DateTimeImmutable('2019-11-30 00:00:00'))
@@ -120,9 +139,5 @@ However, you can override this behavior by setting "includeStartDate" property a
 ## Testing
 
 ```
-./vendor/bin/phpunit (Linux)
-```
-
-```
-.\vendor\bin\phpunit (Windows)
+composer run test
 ```

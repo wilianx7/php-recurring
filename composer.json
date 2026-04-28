@@ -1,7 +1,21 @@
 {
-  "description": "PHP library to make getting dates easier when working with recurring tasks.",
+  "description": "PHP library for generating recurring dates, schedules, and repeated task recurrences.",
   "type": "library",
-  "keywords": ["recurring", "recurrence","date", "dates", "composer", "package", "library", "tasks"],
+  "keywords": [
+    "php",
+    "recurring",
+    "recurrence",
+    "recurrence-rule",
+    "rrule",
+    "schedule",
+    "scheduling",
+    "calendar",
+    "date-generator",
+    "task-scheduling",
+    "repeat-events",
+    "repeat-dates",
+    "carbon"
+  ],
   "name": "wilianx7/php-recurring",
   "homepage": "https://github.com/wilianx7/php-recurring",
   "license": "MIT",
