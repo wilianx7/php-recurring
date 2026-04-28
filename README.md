@@ -1,4 +1,6 @@
 # PHP Recurring
+[![CI](https://github.com/wilianx7/php-recurring/actions/workflows/ci.yml/badge.svg)](https://github.com/wilianx7/php-recurring/actions/workflows/ci.yml)
+
 PHP library for generating recurring dates for schedules, repeated tasks, and calendar-like recurrence rules.
 
 Supports daily, weekly, monthly, and yearly recurrences with custom intervals, end conditions, skipped dates, and `Carbon` or `DateTimeInterface` inputs.
