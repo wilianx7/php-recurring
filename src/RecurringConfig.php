@@ -30,7 +30,7 @@ class RecurringConfig
         private bool                 $includeStartDate = false
     )
     {
-        $this->startDate = Carbon::now()->startOfYear();
+        $this->startDate ??= Carbon::now()->startOfYear();
     }
 
     public function getStartDate(): Carbon
