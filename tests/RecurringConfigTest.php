@@ -66,6 +66,28 @@ class RecurringConfigTest extends AbstractTestCase
         self::assertFalse($recurringConfig->isValid());
     }
 
+    public function test_invalid_frequency_end_value_after_zero_occurrences(): void
+    {
+        $recurringConfig = new RecurringConfig();
+
+        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::AFTER)
+            ->setFrequencyEndValue(0);
+
+        $this->expectException(InvalidFrequencyEndValue::class);
+        self::assertFalse($recurringConfig->isValid());
+    }
+
+    public function test_invalid_frequency_end_value_after_negative_occurrences(): void
+    {
+        $recurringConfig = new RecurringConfig();
+
+        $recurringConfig->setFrequencyEndType(FrequencyEndTypeEnum::AFTER)
+            ->setFrequencyEndValue(-1);
+
+        $this->expectException(InvalidFrequencyEndValue::class);
+        self::assertFalse($recurringConfig->isValid());
+    }
+
     public function test_invalid_repeated_count(): void
     {
         $recurringConfig = new RecurringConfig();
@@ -82,6 +104,50 @@ class RecurringConfigTest extends AbstractTestCase
 
         $recurringConfig->setFrequencyType(FrequencyTypeEnum::YEAR)
             ->setRepeatIn(['day' => 2, 'test' => 4]);
+
+        $this->expectException(InvalidRepeatIn::class);
+        self::assertFalse($recurringConfig->isValid());
+    }
+
+    public function test_invalid_repeat_in_year_with_zero_day(): void
+    {
+        $recurringConfig = new RecurringConfig();
+
+        $recurringConfig->setFrequencyType(FrequencyTypeEnum::YEAR)
+            ->setRepeatIn(['day' => 0, 'month' => 1]);
+
+        $this->expectException(InvalidRepeatIn::class);
+        self::assertFalse($recurringConfig->isValid());
+    }
+
+    public function test_invalid_repeat_in_year_with_negative_day(): void
+    {
+        $recurringConfig = new RecurringConfig();
+
+        $recurringConfig->setFrequencyType(FrequencyTypeEnum::YEAR)
+            ->setRepeatIn(['day' => -1, 'month' => 1]);
+
+        $this->expectException(InvalidRepeatIn::class);
+        self::assertFalse($recurringConfig->isValid());
+    }
+
+    public function test_invalid_repeat_in_year_with_zero_month(): void
+    {
+        $recurringConfig = new RecurringConfig();
+
+        $recurringConfig->setFrequencyType(FrequencyTypeEnum::YEAR)
+            ->setRepeatIn(['day' => 1, 'month' => 0]);
+
+        $this->expectException(InvalidRepeatIn::class);
+        self::assertFalse($recurringConfig->isValid());
+    }
+
+    public function test_invalid_repeat_in_year_with_negative_month(): void
+    {
+        $recurringConfig = new RecurringConfig();
+
+        $recurringConfig->setFrequencyType(FrequencyTypeEnum::YEAR)
+            ->setRepeatIn(['day' => 1, 'month' => -1]);
 
         $this->expectException(InvalidRepeatIn::class);
         self::assertFalse($recurringConfig->isValid());

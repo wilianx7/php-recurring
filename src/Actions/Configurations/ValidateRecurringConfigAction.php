@@ -62,7 +62,7 @@ class ValidateRecurringConfigAction
 
         return ($frequencyEndType !== FrequencyEndTypeEnum::NEVER && !$frequencyEndValue)
             || ($frequencyEndType === FrequencyEndTypeEnum::IN && !($frequencyEndValue instanceof Carbon))
-            || ($frequencyEndType === FrequencyEndTypeEnum::AFTER && !is_int($frequencyEndValue));
+            || ($frequencyEndType === FrequencyEndTypeEnum::AFTER && (!is_int($frequencyEndValue) || $frequencyEndValue <= 0));
     }
 
     /**
@@ -123,6 +123,7 @@ class ValidateRecurringConfigAction
 
     private function isPositiveNumeric(mixed $value): bool
     {
-        return is_int($value) || (is_string($value) && ctype_digit($value) && (int) $value > 0);
+        return (is_int($value) && $value > 0)
+            || (is_string($value) && ctype_digit($value) && (int) $value > 0);
     }
 }
